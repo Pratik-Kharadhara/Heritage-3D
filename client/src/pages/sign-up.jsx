@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useContext } from "react";
 import { Link, useLocation } from "wouter";
-import { AuthContext } from "../App";
+import { AuthContext } from "../context/auth-context";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SignUpPage() {

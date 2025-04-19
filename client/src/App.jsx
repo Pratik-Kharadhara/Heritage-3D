@@ -10,22 +10,18 @@ import ConverterPage from "@/pages/converter-page";
 import AssistantPage from "@/pages/assistant-page";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Redirect } from "wouter";
 import { Loader2 } from "lucide-react";
 
-// Simplified authentication context
-import { createContext } from "react";
-
-// Create a simple authentication context for now
-export const AuthContext = createContext(null);
+// Import AuthContext and AuthProvider
+import { AuthContext, AuthProvider } from "./context/auth-context";
 
 // Simple protected route component without Clerk
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  // For now, we'll simulate authentication checking
-  // In a real app, this would check an authentication token
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  // Use our auth context to check if user is authenticated
+  const auth = useContext(AuthContext);
+  const [isLoading] = useState(false);
   
   if (isLoading) {
     return (
@@ -35,7 +31,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!auth || !auth.user) {
     return <Redirect to="/sign-in" />;
   }
 
@@ -64,17 +60,8 @@ function Router() {
 }
 
 function App() {
-  // Simple auth state for our context
-  const [user, setUser] = useState(null);
-  const authValue = {
-    user,
-    setUser,
-    signIn: (userData) => setUser(userData),
-    signOut: () => setUser(null)
-  };
-
   return (
-    <AuthContext.Provider value={authValue}>
+    <AuthProvider>
       <TooltipProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
@@ -85,7 +72,7 @@ function App() {
           <Toaster />
         </div>
       </TooltipProvider>
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }
 

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { AuthContext } from "../App";
+import { AuthContext } from "../context/auth-context";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Navbar() {
