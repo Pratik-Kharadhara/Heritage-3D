@@ -1,7 +1,25 @@
-import { SignUp } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Link } from "wouter";
 
 export default function SignUpPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Form submission would be handled here in a real implementation
+    console.log("Sign up with:", { name, email, password, acceptTerms });
+  };
+  
   return (
     <div className="flex min-h-[80vh] w-full flex-col md:flex-row">
       {/* Left column - Sign Up Form */}
@@ -16,28 +34,75 @@ export default function SignUpPage() {
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Create an account</h1>
             <p className="text-muted-foreground mt-2">Join us to explore India's heritage in 3D</p>
           </div>
-          <SignUp
-            routing="path"
-            path="/sign-up"
-            signInUrl="/sign-in"
-            redirectUrl="/"
-            appearance={{
-              elements: {
-                rootBox: "rounded-xl shadow-lg",
-                card: "bg-background",
-                headerTitle: "text-foreground text-xl font-semibold",
-                headerSubtitle: "text-muted-foreground text-sm",
-                socialButtonsBlockButton: "border-border hover:bg-muted transition-colors",
-                socialButtonsBlockButtonText: "text-foreground",
-                dividerText: "text-muted-foreground",
-                formFieldLabel: "text-foreground",
-                formFieldInput: "bg-background text-foreground border-border",
-                formButtonPrimary: "bg-primary text-primary-foreground hover:bg-primary/90",
-                footerActionText: "text-muted-foreground",
-                footerActionLink: "text-primary hover:text-primary/90",
-              }
-            }}
-          />
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Sign Up</CardTitle>
+              <CardDescription>Enter your details to create an account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input 
+                    id="name" 
+                    placeholder="John Doe" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="example@email.com" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input 
+                    id="confirmPassword" 
+                    type="password" 
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="terms" 
+                    checked={acceptTerms}
+                    onCheckedChange={(checked) => setAcceptTerms(!!checked)}
+                    required
+                  />
+                  <Label htmlFor="terms" className="text-sm font-normal">
+                    I accept the <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
+                  </Label>
+                </div>
+                <Button type="submit" className="w-full">Create Account</Button>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+              <p className="text-sm text-muted-foreground">
+                Already have an account? <Link href="/sign-in" className="text-primary hover:underline">Sign in</Link>
+              </p>
+            </CardFooter>
+          </Card>
         </div>
       </motion.div>
       
