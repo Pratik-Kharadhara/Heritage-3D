@@ -141,7 +141,7 @@ export class MemStorage implements IStorage {
         description: "Built by Emperor Shah Jahan in memory of his wife Mumtaz Mahal, this ivory-white marble mausoleum is one of the world's most iconic monuments.",
         location: "Agra, Uttar Pradesh",
         userId: 1,
-        modelUrl: "/models/taj-mahal.glb",
+        modelUrl: "/attached_assets/Tajmahal_model_2.obj",
         imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
         createdAt: "2023-01-01"
       },
@@ -151,7 +151,7 @@ export class MemStorage implements IStorage {
         description: "A soaring 73-meter minaret built in the early 13th century, featuring intricate carvings and inscriptions from the Delhi Sultanate period.",
         location: "Delhi, India",
         userId: 1,
-        modelUrl: "/models/qutub-minar.glb",
+        modelUrl: "/attached_assets/Qutub_Minar_3d_Model.obj",
         imageUrl: "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80",
         createdAt: "2023-01-02"
       },

@@ -141,12 +141,8 @@ export default function HomePage() {
             className="flex flex-col justify-center"
           >
             <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4 relative z-20">
-              <span className="bg-background/80 py-1 px-2 backdrop-blur-sm">
-                <TypeWriter 
-                  text={t('heroTitle')}
-                  speed={40}
-                  onComplete={() => setTypingComplete(true)}
-                />
+              <span className="bg-background/80 py-1 px-2 backdrop-blur-sm inline-block">
+                Explore Indian Heritage in 3D
               </span>
             </h1>
             
