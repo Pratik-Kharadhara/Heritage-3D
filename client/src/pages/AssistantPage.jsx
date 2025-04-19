@@ -110,7 +110,7 @@ const AssistantPage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-5xl">
+    <div className="container mx-auto px-4 py-6 max-w-5xl mb-24">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -129,7 +129,7 @@ const AssistantPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Sidebar - Site Selection */}
         <div className="md:col-span-1">
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden sticky top-4">
             <div className="p-4 bg-muted/50">
               <h2 className="font-semibold flex items-center">
                 <Landmark className="mr-2 h-4 w-4" />
@@ -172,9 +172,9 @@ const AssistantPage = () => {
 
         {/* Main Chat Area */}
         <div className="md:col-span-2">
-          <Card className="flex flex-col h-[600px]">
-            <Tabs defaultValue="chat" className="flex-1 flex flex-col">
-              <div className="px-4 py-2 border-b">
+          <Card className="flex flex-col h-[calc(100vh-200px)] min-h-[600px]">
+            <Tabs defaultValue="chat" className="flex-1 flex flex-col h-full">
+              <div className="px-4 py-2 border-b flex-shrink-0">
                 <TabsList className="grid grid-cols-2">
                   <TabsTrigger value="chat" className="flex items-center">
                     <Sparkles className="mr-2 h-4 w-4" />
@@ -187,8 +187,8 @@ const AssistantPage = () => {
                 </TabsList>
               </div>
 
-              <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0">
-                <div className="flex-1 overflow-y-auto p-4">
+              <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0 overflow-hidden h-full">
+                <div className="flex-1 overflow-y-auto p-4 chat-messages">
                   <AnimatePresence>
                     {messages.map((message) => (
                       <motion.div
@@ -226,7 +226,7 @@ const AssistantPage = () => {
                   </AnimatePresence>
                 </div>
 
-                <div className="p-4 border-t">
+                <div className="p-4 border-t flex-shrink-0">
                   <form onSubmit={handleSubmit} className="flex gap-2">
                     <Input
                       type="text"
@@ -253,7 +253,7 @@ const AssistantPage = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="history" className="flex-1 overflow-hidden p-0 m-0">
+              <TabsContent value="history" className="flex-1 overflow-hidden p-0 m-0 h-full">
                 <div className="h-full overflow-y-auto p-4">
                   <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                     <BookOpen className="h-12 w-12 mb-4 opacity-20" />

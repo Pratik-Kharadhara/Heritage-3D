@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom CSS for chat layout */
+.chat-messages {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* Add additional space at the bottom of chat container to prevent overlap with footer */
+.chat-messages {
+  padding-bottom: 20px;
+}
+
+/* Ensure the main content doesn't get too close to the footer */
+.container {
+  margin-bottom: 4rem;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
