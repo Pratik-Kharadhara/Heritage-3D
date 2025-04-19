@@ -45,24 +45,24 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 234 89% 30%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 234 89% 74%;
+    --primary-foreground: 222.2 84% 4.9%;
 
-    --secondary: 24 85% 50%;
+    --secondary: 24 85% 55%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20.2% 75.1%;
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 234 89% 30%;
+    --border: 217.2 32.6% 22.5%;
+    --input: 217.2 32.6% 22.5%;
+    --ring: 234 89% 74%;
   }
 }
 
@@ -133,4 +133,55 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* Button animations */
+.btn-animated {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    hsla(var(--primary), 0.15) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.btn-animated:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-animated:active {
+  transform: scale(0.95);
+}
+
+/* Improved dark mode text readability */
+.dark .text-muted-foreground {
+  opacity: 0.85;
+}
+
+/* Clerk auth elements customization */
+.dark .cl-formButtonPrimary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.dark .cl-footerActionLink {
+  color: hsl(var(--primary));
+}
+
+.dark .cl-internal-1pn8dm3 {
+  color: hsl(var(--foreground));
 }
