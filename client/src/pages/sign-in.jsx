@@ -19,12 +19,20 @@ export default function SignInPage() {
     e.preventDefault();
     // Simulate login - in a real app, this would call an API
     if (email && password) {
-      auth.signIn({ id: 1, email, name: email.split('@')[0] });
-      toast({
-        title: "Signed in successfully",
-        description: "Welcome back!",
-      });
-      navigate("/");
+      if (auth && auth.signIn) {
+        auth.signIn({ id: 1, email, name: email.split('@')[0] });
+        toast({
+          title: "Signed in successfully",
+          description: "Welcome back!",
+        });
+        navigate("/");
+      } else {
+        toast({
+          title: "Authentication error",
+          description: "Unable to sign in at this time",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Error signing in",

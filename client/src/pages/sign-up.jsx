@@ -51,12 +51,20 @@ export default function SignUpPage() {
     }
     
     // Simulate registration - in a real app, this would call an API
-    auth.signIn({ id: 2, email, name });
-    toast({
-      title: "Account created successfully",
-      description: "Welcome to Heritage 3D!",
-    });
-    navigate("/");
+    if (auth && auth.signIn) {
+      auth.signIn({ id: 2, email, name });
+      toast({
+        title: "Account created successfully",
+        description: "Welcome to Heritage 3D!",
+      });
+      navigate("/");
+    } else {
+      toast({
+        title: "Authentication error",
+        description: "Unable to create account at this time",
+        variant: "destructive",
+      });
+    }
   };
   
   return (
