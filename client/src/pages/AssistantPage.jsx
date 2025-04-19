@@ -33,7 +33,7 @@ const AssistantPage = () => {
     };
 
     fetchHeritageSites();
-  }, [toast]);
+  }, []); // Remove the toast dependency to prevent infinite fetching
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
