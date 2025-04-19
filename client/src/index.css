@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn-animated {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+  }
+  
+  .btn-animated:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.5s ease;
+    z-index: -1;
+  }
+  
+  .btn-animated:hover:before {
+    width: 100%;
+  }
+  
+  .card-3d {
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+};
+
 /* Custom CSS for chat layout */
 .chat-messages {
   scrollbar-width: thin;

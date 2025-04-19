@@ -120,40 +120,54 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }) => {
 
       // Create OBJ loader
       const objLoader = new OBJLoader();
+      console.log('Loading model from URL:', modelUrl);
+      
+      // Create a debug sphere to verify scene is rendering
+      const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(0, 0, 0);
+      scene.add(sphere);
       
       // Load the model
       objLoader.load(
         modelUrl,
         (object) => {
-          // Center the model
-          const box = new THREE.Box3().setFromObject(object);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
+          console.log('Model loaded successfully:', object);
+          // Remove debug sphere
+          scene.remove(sphere);
           
-          // Normalize size
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const scale = 5 / maxDim;
-          object.scale.set(scale, scale, scale);
-          
-          // Center model
-          object.position.sub(center.multiplyScalar(scale));
-          
-          // Set material for the model if it doesn't have one
+          // Apply a default material to all meshes in the model
           object.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-              if (!child.material) {
-                child.material = new THREE.MeshStandardMaterial({
-                  color: 0xD1D5DB,
-                  metalness: 0.1,
-                  roughness: 0.8
-                });
-              }
+              child.material = new THREE.MeshStandardMaterial({
+                color: 0xCCCCCC,
+                metalness: 0.2,
+                roughness: 0.7
+              });
               child.castShadow = true;
               child.receiveShadow = true;
             }
           });
           
+          // Add model to the scene
           scene.add(object);
+          
+          // Calculate bounding box
+          const box = new THREE.Box3().setFromObject(object);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          
+          // Check if size is valid (not NaN)
+          const maxDim = Math.max(size.x || 1, size.y || 1, size.z || 1);
+          
+          // Scale model to fit view
+          const scale = 5 / maxDim;
+          object.scale.set(scale, scale, scale);
+          
+          // Center model
+          object.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+          
           setIsLoading(false);
           
           // Set camera position based on model
