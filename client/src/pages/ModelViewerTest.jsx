@@ -109,33 +109,72 @@ function ModelViewerTest() {
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup
+    // Cleanup - improved to fully dispose of Three.js resources
     return () => {
       window.removeEventListener('resize', handleResize);
+      
+      // Stop animation loop
       if (rendererRef.current) {
-        rendererRef.current.dispose();
+        rendererRef.current.setAnimationLoop(null);
       }
       
-      // Dispose geometries and materials
+      // Dispose all meshes, materials, and geometries
       if (sceneRef.current) {
-        sceneRef.current.traverse((object) => {
+        // First, remove all objects
+        while(sceneRef.current.children.length > 0) { 
+          const object = sceneRef.current.children[0];
+          
+          // Recursively dispose resources
           if (object instanceof THREE.Mesh) {
-            if (object.geometry) {
-              object.geometry.dispose();
-            }
+            if (object.geometry) object.geometry.dispose();
             
             if (object.material) {
               if (Array.isArray(object.material)) {
-                object.material.forEach(material => material.dispose());
+                object.material.forEach(material => {
+                  Object.keys(material).forEach(prop => {
+                    if (material[prop] && material[prop].dispose) {
+                      material[prop].dispose();
+                    }
+                  });
+                  material.dispose();
+                });
               } else {
+                Object.keys(object.material).forEach(prop => {
+                  if (object.material[prop] && object.material[prop].dispose) {
+                    object.material[prop].dispose();
+                  }
+                });
                 object.material.dispose();
               }
             }
           }
-        });
+          
+          sceneRef.current.remove(object);
+        }
       }
+      
+      // Dispose renderer
+      if (rendererRef.current) {
+        if (rendererRef.current.domElement.parentElement) {
+          rendererRef.current.domElement.parentElement.removeChild(rendererRef.current.domElement);
+        }
+        rendererRef.current.dispose();
+        rendererRef.current = null;
+      }
+      
+      // Clear references
+      if (controlsRef.current) {
+        controlsRef.current.dispose();
+        controlsRef.current = null;
+      }
+      
+      cameraRef.current = null;
+      sceneRef.current = null;
     };
   }, []);
+
+  // Cache to store loaded models
+  const [modelCache, setModelCache] = useState({});
 
   // Load model when selected model changes
   useEffect(() => {
@@ -143,74 +182,109 @@ function ModelViewerTest() {
     
     setIsLoading(true);
     
-    // Clear previous models
+    // Clear previous models from scene 
     sceneRef.current.traverse((object) => {
       if (object instanceof THREE.Mesh && object.userData.isModel) {
         sceneRef.current.remove(object);
       }
     });
+
+    // Check if we have this model in cache
+    if (modelCache[selectedModel.id]) {
+      // Use cached model
+      const cachedObject = modelCache[selectedModel.id].clone();
+      sceneRef.current.add(cachedObject);
+      setIsLoading(false);
+      
+      // Reset camera
+      if (cameraRef.current) {
+        cameraRef.current.position.set(0, 2, 8);
+        cameraRef.current.lookAt(0, 0, 0);
+        if (controlsRef.current) controlsRef.current.update();
+      }
+      return;
+    }
     
-    // Create OBJ loader
+    // Create OBJ loader with appropriate error handling
     const objLoader = new OBJLoader();
     
-    // Load the model
-    objLoader.load(
-      selectedModel.modelUrl,
-      (object) => {
-        // Center the model
-        const box = new THREE.Box3().setFromObject(object);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        
-        // Normalize size
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 5 / maxDim;
-        object.scale.set(scale, scale, scale);
-        
-        // Center model
-        object.position.sub(center.multiplyScalar(scale));
-        
-        // Mark as model for cleanup
-        object.userData.isModel = true;
-        
-        // Set material for the model if it doesn't have one
-        object.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            if (!child.material) {
-              child.material = new THREE.MeshStandardMaterial({
-                color: 0xD1D5DB,
-                metalness: 0.1,
-                roughness: 0.8
-              });
+    try {
+      // Load the model
+      objLoader.load(
+        selectedModel.modelUrl,
+        (object) => {
+          try {
+            // Center the model
+            const box = new THREE.Box3().setFromObject(object);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            
+            // Normalize size
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 5 / maxDim;
+            object.scale.set(scale, scale, scale);
+            
+            // Center model
+            object.position.sub(center.multiplyScalar(scale));
+            
+            // Mark as model for cleanup
+            object.userData.isModel = true;
+            
+            // Set material for the model if it doesn't have one
+            object.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                if (!child.material) {
+                  child.material = new THREE.MeshStandardMaterial({
+                    color: 0xD1D5DB,
+                    metalness: 0.1,
+                    roughness: 0.8
+                  });
+                }
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+            
+            // Add to scene and cache
+            sceneRef.current.add(object);
+            setModelCache(prev => ({
+              ...prev,
+              [selectedModel.id]: object.clone()
+            }));
+            
+            setIsLoading(false);
+            
+            // Reset camera position
+            if (cameraRef.current) {
+              cameraRef.current.position.set(0, 2, 8);
+              cameraRef.current.lookAt(0, 0, 0);
             }
-            child.castShadow = true;
-            child.receiveShadow = true;
+            
+            // Update controls
+            if (controlsRef.current) {
+              controlsRef.current.update();
+            }
+          } catch (err) {
+            console.error('Error processing loaded model:', err);
+            setIsLoading(false);
           }
-        });
-        
-        sceneRef.current.add(object);
-        setIsLoading(false);
-        
-        // Reset camera position
-        if (cameraRef.current) {
-          cameraRef.current.position.set(0, 2, 8);
-          cameraRef.current.lookAt(0, 0, 0);
+        },
+        (xhr) => {
+          // Only log every 10% to reduce console spam
+          if (Math.round((xhr.loaded / xhr.total) * 100) % 10 === 0) {
+            console.log(`${Math.round((xhr.loaded / xhr.total) * 100)}% loaded`);
+          }
+        },
+        (error) => {
+          console.error('Error loading model:', error);
+          setIsLoading(false);
         }
-        
-        // Update controls
-        if (controlsRef.current) {
-          controlsRef.current.update();
-        }
-      },
-      (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-      },
-      (error) => {
-        console.error('Error loading model:', error);
-        setIsLoading(false);
-      }
-    );
-  }, [selectedModel]);
+      );
+    } catch (err) {
+      console.error('Fatal error loading model:', err);
+      setIsLoading(false);
+    }
+  }, [selectedModel, modelCache]);
 
   return (
     <div className="container mx-auto p-6">
