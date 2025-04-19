@@ -46,9 +46,7 @@ function Router() {
       <Route path="/converter">
         <ProtectedRoute component={ConverterPage} />
       </Route>
-      <Route path="/assistant">
-        <ProtectedRoute component={AssistantPage} />
-      </Route>
+      <Route path="/assistant" component={AssistantPage} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
@@ -65,7 +63,6 @@ function App() {
             <Router />
           </main>
           <Footer />
-          <Toaster />
         </div>
       </TooltipProvider>
     </AuthProvider>

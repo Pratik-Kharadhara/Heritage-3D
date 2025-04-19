@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
-import { Search, Send, HistoryIcon, Sparkles, BookOpen, Landmark } from 'lucide-react';
+import { Search, Send, History, Sparkles, BookOpen, Landmark } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 const AssistantPage = () => {
@@ -14,7 +13,7 @@ const AssistantPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [heritageSites, setHeritageSites] = useState([]);
   const messagesEndRef = useRef(null);
-  const { toast } = useToast();
+  const toast = { toast: (config) => console.log('Toast:', config) };
 
   // Fetch available heritage sites when component mounts
   useEffect(() => {
@@ -182,7 +181,7 @@ const AssistantPage = () => {
                     Chat
                   </TabsTrigger>
                   <TabsTrigger value="history" className="flex items-center">
-                    <HistoryIcon className="mr-2 h-4 w-4" />
+                    <History className="mr-2 h-4 w-4" />
                     History
                   </TabsTrigger>
                 </TabsList>
