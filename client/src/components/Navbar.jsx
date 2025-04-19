@@ -36,12 +36,14 @@ export default function Navbar() {
   };
 
   const handleSignOut = () => {
-    auth.signOut();
-    toast({
-      title: "Signed out successfully",
-      description: "You have been signed out of your account",
-    });
-    navigate("/");
+    if (auth && auth.signOut) {
+      auth.signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      navigate("/");
+    }
   };
 
   const logoAnimation = {
@@ -238,7 +240,7 @@ export default function Navbar() {
             
             {/* Mobile auth buttons */}
             <div className="px-4 py-4">
-              {auth.user ? (
+              {auth && auth.user ? (
                 // User is signed in
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 px-2">
