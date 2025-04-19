@@ -1,9 +1,10 @@
 import { createContext, useContext } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
+import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient.js";
 import { useToast } from "@/hooks/use-toast";
 
-export const AuthContext = createContext(null);
+// Create the auth context
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const { toast } = useToast();

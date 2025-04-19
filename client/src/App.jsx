@@ -7,7 +7,7 @@ import AuthPage from "@/pages/auth-page";
 import ModelsPage from "@/pages/models-page";
 import ConverterPage from "@/pages/converter-page";
 import AssistantPage from "@/pages/assistant-page";
-import { ProtectedRoute } from "./lib/protected-route";
+import { ProtectedRoute } from "./lib/protected-route.jsx";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -16,9 +16,15 @@ function Router() {
     <Switch>
       <Route path="/" component={HomePage}/>
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/models" component={ModelsPage} />
-      <ProtectedRoute path="/converter" component={ConverterPage} />
-      <ProtectedRoute path="/assistant" component={AssistantPage} />
+      <Route path="/models">
+        <ProtectedRoute path="/models" component={ModelsPage} />
+      </Route>
+      <Route path="/converter">
+        <ProtectedRoute path="/converter" component={ConverterPage} />
+      </Route>
+      <Route path="/assistant">
+        <ProtectedRoute path="/assistant" component={AssistantPage} />
+      </Route>
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
