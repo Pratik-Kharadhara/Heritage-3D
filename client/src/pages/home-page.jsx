@@ -140,12 +140,14 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="flex flex-col justify-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-              <TypeWriter 
-                text={t('heroTitle')}
-                speed={40}
-                onComplete={() => setTypingComplete(true)}
-              />
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4 relative z-20">
+              <span className="bg-background/80 py-1 px-2 backdrop-blur-sm">
+                <TypeWriter 
+                  text={t('heroTitle')}
+                  speed={40}
+                  onComplete={() => setTypingComplete(true)}
+                />
+              </span>
             </h1>
             
             <AnimatePresence>
@@ -200,34 +202,61 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="bg-muted/30 p-4 rounded-2xl shadow-lg h-[500px] relative overflow-hidden"
+            className="bg-gradient-to-br from-primary/5 to-secondary/5 p-6 rounded-2xl shadow-lg h-[550px] relative overflow-hidden border border-primary/10"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-background/70 to-transparent z-10 pointer-events-none" />
+            {/* Decorative elements */}
+            <div className="absolute -top-20 -right-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-secondary/10 rounded-full blur-3xl" />
             
+            {/* Model viewer overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-background/50 via-transparent to-transparent z-10 pointer-events-none" />
+            
+            {/* Title banner */}
+            <div className="absolute top-4 left-4 right-4 z-20 bg-background/70 backdrop-blur-sm rounded-lg p-3 border border-muted">
+              <h3 className="text-xl font-semibold text-center">{activeModel?.name || t('interactiveModel')}</h3>
+            </div>
+            
+            {/* 3D model viewer */}
             {activeModel && (
               <div className="w-full h-full" ref={modelViewerRef}>
                 <ThreeJSCanvas modelUrl={activeModel.modelUrl} />
               </div>
             )}
             
+            {/* Model selector */}
             <div className="absolute bottom-4 left-4 right-4 z-20">
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {models.map((model) => (
-                  <motion.button
-                    key={model.id}
-                    whileHover={{ y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleModelChange(model)}
-                    className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap ${
-                      activeModel?.id === model.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted/50 hover:bg-muted/80'
-                    }`}
-                  >
-                    {model.name}
-                  </motion.button>
-                ))}
+              <div className="bg-background/70 backdrop-blur-sm rounded-lg p-3 border border-muted">
+                <p className="text-sm text-muted-foreground mb-2 text-center">{t('selectMonument')}</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {models.map((model) => (
+                    <motion.button
+                      key={model.id}
+                      whileHover={{ y: -3, scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleModelChange(model)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                        activeModel?.id === model.id
+                          ? 'bg-primary text-primary-foreground shadow-md'
+                          : 'bg-muted/80 hover:bg-muted text-foreground hover:shadow-md'
+                      }`}
+                    >
+                      {model.name}
+                    </motion.button>
+                  ))}
+                </div>
               </div>
+            </div>
+            
+            {/* Hint text */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-5 pointer-events-none">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ delay: 2, duration: 1 }}
+                className="text-center text-muted-foreground/70"
+              >
+                <p className="text-sm">{t('dragRotate')}</p>
+              </motion.div>
             </div>
           </motion.div>
         </div>

@@ -14,6 +14,7 @@ const defaultLanguages = {
       signIn: 'Sign in',
       signUp: 'Sign up',
       signOut: 'Sign out',
+      language: 'Language',
       
       // Homepage
       heroTitle: 'Explore Indian Heritage in 3D',
@@ -23,6 +24,17 @@ const defaultLanguages = {
       featuredModels: 'Featured Monuments',
       viewAllModels: 'View All Models',
       viewDetails: 'View details',
+      selectMonument: 'Select a monument to explore:',
+      dragRotate: 'Drag to rotate | Scroll to zoom',
+      interactiveModel: 'Interactive 3D Model',
+      
+      // Feature sections
+      richHistory: 'Rich History',
+      richHistoryDesc: 'Discover the fascinating history behind iconic Indian monuments and cultural sites.',
+      aiAssistant: 'AI Assistant',
+      aiAssistantDesc: 'Ask questions and get detailed information about any Indian heritage monument.',
+      modelsFeature: '3D Models',
+      modelsFeatureDesc: 'Explore detailed 3D models of monuments with interactive controls and immersive views.',
       
       // Models page
       modelsTitle: 'Explore 3D Models',
@@ -30,6 +42,8 @@ const defaultLanguages = {
       searchPlaceholder: 'Search monuments by name, location or category...',
       noModelsFound: 'No models found matching your search.',
       clearSearch: 'Clear Search',
+      viewModel: 'View 3D Model',
+      fullDetails: 'Full Details',
       
       // Assistant page
       assistantTitle: 'Heritage Knowledge Assistant',
@@ -48,29 +62,43 @@ const defaultLanguages = {
     name: 'हिंदी',
     translations: {
       // Navbar
-      home: 'होम',
-      models: '3D मॉडल',
+      home: 'मुख्य पृष्ठ',
+      models: '3D मॉडल्स',
       assistant: 'सहायक',
       converter: 'टेक्स्ट से 3D',
-      signIn: 'साइन इन',
-      signUp: 'साइन अप',
-      signOut: 'साइन आउट',
+      signIn: 'लॉग इन करें',
+      signUp: 'पंजीकरण करें',
+      signOut: 'लॉग आउट करें',
+      language: 'भाषा',
       
       // Homepage
-      heroTitle: 'भारतीय विरासत का 3D में अन्वेषण करें',
-      heroSubtitle: 'इमर्सिव 3D अनुभवों और AI-संचालित ज्ञान के माध्यम से भारतीय स्मारकों के समृद्ध इतिहास और वास्तुकला सौंदर्य की खोज करें।',
-      exploreButton: '3D मॉडल देखें',
-      learnMore: 'अधिक जानें',
-      featuredModels: 'विशेष स्मारक',
-      viewAllModels: 'सभी मॉडल देखें',
+      heroTitle: 'भारतीय विरासत को 3D में देखें',
+      heroSubtitle: 'इमर्सिव 3D अनुभवों और AI-संचालित जानकारी के माध्यम से भारतीय स्मारकों के समृद्ध इतिहास और वास्तुकला सौंदर्य की खोज करें।',
+      exploreButton: '3D मॉडल्स देखें',
+      learnMore: 'अधिक जानकारी',
+      featuredModels: 'प्रमुख स्मारक',
+      viewAllModels: 'सभी मॉडल्स देखें',
       viewDetails: 'विवरण देखें',
+      selectMonument: 'एक स्मारक चुनें:',
+      dragRotate: 'घुमाने के लिए खींचें | ज़ूम करने के लिए स्क्रॉल करें',
+      interactiveModel: 'इंटरैक्टिव 3D मॉडल',
+      
+      // Feature sections
+      richHistory: 'समृद्ध इतिहास',
+      richHistoryDesc: 'प्रसिद्ध भारतीय स्मारकों और सांस्कृतिक स्थलों के पीछे के रोचक इतिहास की खोज करें।',
+      aiAssistant: 'AI सहायक',
+      aiAssistantDesc: 'किसी भी भारतीय विरासत स्मारक के बारे में प्रश्न पूछें और विस्तृत जानकारी प्राप्त करें।',
+      modelsFeature: '3D मॉडल्स',
+      modelsFeatureDesc: 'इंटरैक्टिव नियंत्रणों और इमर्सिव दृश्यों के साथ स्मारकों के विस्तृत 3D मॉडल का अन्वेषण करें।',
       
       // Models page
-      modelsTitle: '3D मॉडल एक्सप्लोर करें',
-      modelsSubtitle: 'प्रतिष्ठित भारतीय विरासत स्मारकों के विस्तृत 3D मॉडल का हमारा संग्रह ब्राउज़ करें।',
+      modelsTitle: '3D मॉडल्स का अन्वेषण करें',
+      modelsSubtitle: 'प्रतिष्ठित भारतीय विरासत स्मारकों के विस्तृत 3D मॉडल्स का हमारा संग्रह देखें।',
       searchPlaceholder: 'नाम, स्थान या श्रेणी से स्मारकों को खोजें...',
       noModelsFound: 'आपकी खोज से मेल खाने वाला कोई मॉडल नहीं मिला।',
       clearSearch: 'खोज साफ़ करें',
+      viewModel: '3D मॉडल देखें',
+      fullDetails: 'पूरा विवरण',
       
       // Assistant page
       assistantTitle: 'विरासत ज्ञान सहायक',
@@ -82,47 +110,6 @@ const defaultLanguages = {
       loading: 'लोड हो रहा है...',
       error: 'कुछ गलत हुआ। कृपया पुनः प्रयास करें।',
       close: 'बंद करें',
-    }
-  },
-  ta: {
-    code: 'ta',
-    name: 'தமிழ்',
-    translations: {
-      // Navbar
-      home: 'முகப்பு',
-      models: '3D மாதிரிகள்',
-      assistant: 'உதவியாளர்',
-      converter: 'டெக்ஸ்ட் டு 3D',
-      signIn: 'உள்நுழைக',
-      signUp: 'பதிவு செய்க',
-      signOut: 'வெளியேறு',
-      
-      // Homepage
-      heroTitle: 'இந்திய பாரம்பரியத்தை 3D-இல் ஆராயுங்கள்',
-      heroSubtitle: 'இமெர்சிவ் 3D அனுபவங்கள் மற்றும் AI-ஆல் இயக்கப்படும் அறிவு மூலம் இந்திய நினைவுச்சின்னங்களின் வளமான வரலாறு மற்றும் கட்டிடக்கலை அழகைக் கண்டறியுங்கள்.',
-      exploreButton: '3D மாதிரிகளை ஆராயுங்கள்',
-      learnMore: 'மேலும் அறிக',
-      featuredModels: 'சிறப்பு நினைவுச்சின்னங்கள்',
-      viewAllModels: 'அனைத்து மாதிரிகளையும் காண்க',
-      viewDetails: 'விவரங்களைக் காண்க',
-      
-      // Models page
-      modelsTitle: '3D மாதிரிகளை ஆராயுங்கள்',
-      modelsSubtitle: 'புகழ்பெற்ற இந்திய பாரம்பரிய நினைவுச்சின்னங்களின் விரிவான 3D மாதிரிகளின் எங்கள் சேகரிப்பை உலாவுங்கள்.',
-      searchPlaceholder: 'பெயர், இருப்பிடம் அல்லது வகை மூலம் நினைவுச்சின்னங்களைத் தேடுங்கள்...',
-      noModelsFound: 'உங்கள் தேடலுடன் பொருந்தும் மாதிரிகள் எதுவும் இல்லை.',
-      clearSearch: 'தேடலை அழிக்க',
-      
-      // Assistant page
-      assistantTitle: 'பாரம்பரிய அறிவு உதவியாளர்',
-      assistantSubtitle: 'இந்திய பாரம்பரிய நினைவுச்சின்னங்களைப் பற்றி எதையும் கேளுங்கள் மற்றும் AI ஆல் இயக்கப்படும் விரிவான தகவல்களைப் பெறுங்கள்.',
-      messagePlaceholder: 'இந்திய நினைவுச்சின்னங்களைப் பற்றி உங்கள் கேள்வியைத் தட்டச்சு செய்யவும்...',
-      sendMessage: 'அனுப்பு',
-      
-      // Common
-      loading: 'ஏற்றுகிறது...',
-      error: 'ஏதோ தவறு நடந்துவிட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.',
-      close: 'மூடு',
     }
   }
 };
