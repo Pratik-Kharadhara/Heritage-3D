@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { models as modelsSchema, tours as toursSchema } from "@shared/schema";
 import { z } from "zod";
+import { getHeritageDetails, getHeritageSites } from "./gemini";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes (/api/register, /api/login, /api/logout, /api/user)
@@ -92,6 +93,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const tour = await storage.createTour(req.body);
       res.status(201).json(tour);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Heritage Monuments Assistant API routes
+  app.get("/api/heritage/sites", async (req, res, next) => {
+    try {
+      const sites = getHeritageSites();
+      res.json(sites);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/heritage/details", async (req, res, next) => {
+    try {
+      const { site } = req.body;
+      
+      if (!site) {
+        return res.status(400).json({ 
+          error: 'Missing site parameter' 
+        });
+      }
+      
+      const details = await getHeritageDetails(site);
+      res.json(details);
     } catch (error) {
       next(error);
     }

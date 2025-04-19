@@ -5,8 +5,8 @@ import NotFound from "@/pages/not-found";
 import SignInPage from "./pages/sign-in";
 import SignUpPage from "./pages/sign-up";
 import SimpleModelViewer from "./pages/SimpleModelViewer"; // Import our simpler model viewer
+import AssistantPage from "./pages/AssistantPage"; // Import our heritage assistant page
 import ConverterPage from "@/pages/converter-page";
-import AssistantPage from "@/pages/assistant-page";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useContext } from "react";
