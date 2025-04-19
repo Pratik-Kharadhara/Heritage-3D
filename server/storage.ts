@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser, models, tours, type Model, type Tour, type InsertModel } from "@shared/schema";
+import { users, type User, type InsertUser, models, tours, type Model, type Tour } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 
@@ -26,7 +26,7 @@ export interface IStorage {
   deleteTour(id: number): Promise<boolean>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 }
 
 export class MemStorage implements IStorage {
@@ -213,4 +213,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Import the DatabaseStorage implementation
+import { DatabaseStorage } from "./storage-db";
+
+// Use DatabaseStorage instead of MemStorage for production
+export const storage = new DatabaseStorage();
