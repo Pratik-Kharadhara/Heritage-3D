@@ -8,27 +8,38 @@ import SignUpPage from "./pages/sign-up";
 import ModelsPage from "@/pages/models-page";
 import ConverterPage from "@/pages/converter-page";
 import AssistantPage from "@/pages/assistant-page";
-import { 
-  ClerkLoaded, 
-  SignedIn, 
-  SignedOut, 
-  RedirectToSignIn
-} from "@clerk/clerk-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useState } from "react";
+import { Redirect } from "wouter";
+import { Loader2 } from "lucide-react";
 
-// Protected route component using Clerk
+// Simplified authentication context
+import { createContext } from "react";
+
+// Create a simple authentication context for now
+export const AuthContext = createContext(null);
+
+// Simple protected route component without Clerk
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  return (
-    <ClerkLoaded>
-      <SignedIn>
-        <Component {...rest} />
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </ClerkLoaded>
-  );
+  // For now, we'll simulate authentication checking
+  // In a real app, this would check an authentication token
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-border" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect to="/sign-in" />;
+  }
+
+  return <Component {...rest} />;
 };
 
 function Router() {
@@ -53,17 +64,28 @@ function Router() {
 }
 
 function App() {
+  // Simple auth state for our context
+  const [user, setUser] = useState(null);
+  const authValue = {
+    user,
+    setUser,
+    signIn: (userData) => setUser(userData),
+    signOut: () => setUser(null)
+  };
+
   return (
-    <TooltipProvider>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Router />
-        </main>
-        <Footer />
-        <Toaster />
-      </div>
-    </TooltipProvider>
+    <AuthContext.Provider value={authValue}>
+      <TooltipProvider>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
+            <Router />
+          </main>
+          <Footer />
+          <Toaster />
+        </div>
+      </TooltipProvider>
+    </AuthContext.Provider>
   );
 }
 

@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useContext } from "react";
+import { Link, useLocation } from "wouter";
+import { AuthContext } from "../App";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -13,11 +15,48 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const auth = useContext(AuthContext);
+  const [, navigate] = useLocation();
+  const { toast } = useToast();
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission would be handled here in a real implementation
-    console.log("Sign up with:", { name, email, password, acceptTerms });
+    
+    // Basic validation
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Error creating account",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error creating account",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!acceptTerms) {
+      toast({
+        title: "Error creating account",
+        description: "You must accept the terms and conditions",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Simulate registration - in a real app, this would call an API
+    auth.signIn({ id: 2, email, name });
+    toast({
+      title: "Account created successfully",
+      description: "Welcome to Heritage 3D!",
+    });
+    navigate("/");
   };
   
   return (

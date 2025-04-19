@@ -3,17 +3,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useContext } from "react";
+import { Link, useLocation } from "wouter";
+import { AuthContext } from "../App";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const auth = useContext(AuthContext);
+  const [, navigate] = useLocation();
+  const { toast } = useToast();
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission would be handled here in a real implementation
-    console.log("Sign in with:", email, password);
+    // Simulate login - in a real app, this would call an API
+    if (email && password) {
+      auth.signIn({ id: 1, email, name: email.split('@')[0] });
+      toast({
+        title: "Signed in successfully",
+        description: "Welcome back!",
+      });
+      navigate("/");
+    } else {
+      toast({
+        title: "Error signing in",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+    }
   };
   
   return (
