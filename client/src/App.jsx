@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import SignInPage from "./pages/sign-in";
 import SignUpPage from "./pages/sign-up";
-import ModelViewerTest from "./pages/ModelViewerTest"; // Import our test page
+import SimpleModelViewer from "./pages/SimpleModelViewer"; // Import our simpler model viewer
 import ConverterPage from "@/pages/converter-page";
 import AssistantPage from "@/pages/assistant-page";
 import Navbar from "@/components/Navbar";
@@ -40,7 +40,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={ModelViewerTest}/>
+      <Route path="/" component={SimpleModelViewer}/>
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/sign-up" component={SignUpPage} />
       <Route path="/converter">

@@ -139,11 +139,13 @@ function ModelViewerTest() {
                   material.dispose();
                 });
               } else {
-                Object.keys(object.material).forEach(prop => {
-                  if (object.material[prop] && object.material[prop].dispose) {
-                    object.material[prop].dispose();
-                  }
-                });
+                // Only dispose of maps/textures
+                if (object.material.map) object.material.map.dispose();
+                if (object.material.lightMap) object.material.lightMap.dispose();
+                if (object.material.bumpMap) object.material.bumpMap.dispose();
+                if (object.material.normalMap) object.material.normalMap.dispose();
+                if (object.material.specularMap) object.material.specularMap.dispose();
+                if (object.material.envMap) object.material.envMap.dispose();
                 object.material.dispose();
               }
             }
@@ -182,27 +184,65 @@ function ModelViewerTest() {
     
     setIsLoading(true);
     
-    // Clear previous models from scene 
+    // Completely clear previous models from scene
+    // Find and remove all model objects
+    const modelsToRemove = [];
     sceneRef.current.traverse((object) => {
-      if (object instanceof THREE.Mesh && object.userData.isModel) {
-        sceneRef.current.remove(object);
+      if (object.userData && object.userData.isModel) {
+        modelsToRemove.push(object);
       }
+    });
+    
+    // Remove all found models
+    modelsToRemove.forEach(object => {
+      // Dispose materials and geometries
+      if (object instanceof THREE.Mesh) {
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(material => material.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      }
+      // Remove from scene
+      object.parent.remove(object);
     });
 
     // Check if we have this model in cache
     if (modelCache[selectedModel.id]) {
-      // Use cached model
-      const cachedObject = modelCache[selectedModel.id].clone();
-      sceneRef.current.add(cachedObject);
-      setIsLoading(false);
-      
-      // Reset camera
-      if (cameraRef.current) {
-        cameraRef.current.position.set(0, 2, 8);
-        cameraRef.current.lookAt(0, 0, 0);
-        if (controlsRef.current) controlsRef.current.update();
+      try {
+        // Use cached model - make a proper deep clone
+        const cachedObject = modelCache[selectedModel.id].clone();
+        
+        // Make sure the clone is properly marked as a model
+        cachedObject.userData.isModel = true;
+        
+        // Also ensure all children of the clone have the proper materials
+        cachedObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            // Ensure the child is also marked for proper cleanup
+            child.userData.isModel = true;
+          }
+        });
+        
+        sceneRef.current.add(cachedObject);
+        setIsLoading(false);
+        
+        // Reset camera
+        if (cameraRef.current) {
+          cameraRef.current.position.set(0, 2, 8);
+          cameraRef.current.lookAt(0, 0, 0);
+          if (controlsRef.current) controlsRef.current.update();
+        }
+        return;
+      } catch (err) {
+        console.error("Error using cached model:", err);
+        // If there's an error with the cached model, continue to load it again
       }
-      return;
     }
     
     // Create OBJ loader with appropriate error handling
