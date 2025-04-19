@@ -106,10 +106,8 @@ export default function Navbar() {
             <div className="hidden md:ml-8 md:flex md:space-x-4 md:items-center">
               <NavLink to="/" label="Home" />
               <NavLink to="/models" label="3D Models" />
-              <SignedIn>
-                <NavLink to="/converter" label="Text to 3D" />
-                <NavLink to="/assistant" label="Assistant" />
-              </SignedIn>
+              <NavLink to="/converter" label="Text to 3D" />
+              <NavLink to="/assistant" label="Assistant" />
             </div>
           </div>
 
@@ -135,34 +133,29 @@ export default function Navbar() {
 
             {/* Desktop authentication */}
             <div className="hidden md:flex items-center space-x-2">
-              <SignedIn>
-                {/* User menu */}
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-              <SignedOut>
-                <motion.div
-                  variants={buttonAnimation}
-                  whileHover="hover"
-                  whileTap="tap"
+              {/* Login/Signup buttons */}
+              <motion.div
+                variants={buttonAnimation}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                <Button 
+                  variant="ghost" 
+                  asChild
+                  className="hover:bg-muted transition-colors"
                 >
-                  <Button 
-                    variant="ghost" 
-                    asChild
-                    className="hover:bg-muted transition-colors"
-                  >
-                    <Link href="/sign-in">Sign in</Link>
-                  </Button>
-                </motion.div>
-                <motion.div
-                  variants={buttonAnimation}
-                  whileHover="hover"
-                  whileTap="tap"
-                >
-                  <Button asChild>
-                    <Link href="/sign-up">Sign up</Link>
-                  </Button>
-                </motion.div>
-              </SignedOut>
+                  <Link href="/sign-in">Sign in</Link>
+                </Button>
+              </motion.div>
+              <motion.div
+                variants={buttonAnimation}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                <Button asChild>
+                  <Link href="/sign-up">Sign up</Link>
+                </Button>
+              </motion.div>
             </div>
 
             {/* Mobile menu button */}
@@ -186,29 +179,17 @@ export default function Navbar() {
           <div className="pt-2 pb-4 space-y-1">
             <NavLinkMobile to="/" label="Home" onClick={toggleMobileMenu} />
             <NavLinkMobile to="/models" label="3D Models" onClick={toggleMobileMenu} />
-            <SignedIn>
-              <NavLinkMobile to="/converter" label="Text to 3D" onClick={toggleMobileMenu} />
-              <NavLinkMobile to="/assistant" label="Assistant" onClick={toggleMobileMenu} />
-            </SignedIn>
-            <div className="px-4 py-4 flex items-center justify-between">
-              <SignedIn>
-                <div className="flex items-center space-x-3">
-                  <UserButton afterSignOutUrl="/" />
-                  <span className="text-sm text-muted-foreground">
-                    User
-                  </span>
-                </div>
-              </SignedIn>
-              <SignedOut>
-                <div className="grid grid-cols-2 gap-2 w-full py-2">
-                  <Button variant="outline" asChild className="w-full">
-                    <Link href="/sign-in">Sign in</Link>
-                  </Button>
-                  <Button asChild className="w-full">
-                    <Link href="/sign-up">Sign up</Link>
-                  </Button>
-                </div>
-              </SignedOut>
+            <NavLinkMobile to="/converter" label="Text to 3D" onClick={toggleMobileMenu} />
+            <NavLinkMobile to="/assistant" label="Assistant" onClick={toggleMobileMenu} />
+            <div className="px-4 py-4">
+              <div className="grid grid-cols-2 gap-2 w-full py-2">
+                <Button variant="outline" asChild className="w-full">
+                  <Link href="/sign-in">Sign in</Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link href="/sign-up">Sign up</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>

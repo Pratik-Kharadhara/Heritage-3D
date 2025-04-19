@@ -61,8 +61,8 @@ function App() {
           <Router />
         </main>
         <Footer />
+        <Toaster />
       </div>
-      <Toaster />
     </TooltipProvider>
   );
 }
