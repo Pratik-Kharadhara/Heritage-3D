@@ -141,6 +141,11 @@ export default function Navbar() {
 
           {/* User menu and mobile toggle */}
           <div className="flex items-center">
+            {/* Language selector */}
+            <div className="mr-2 hidden md:block">
+              <LanguageSelector />
+            </div>
+
             {/* Theme toggle */}
             <motion.div
               variants={buttonAnimation}
@@ -240,8 +245,16 @@ export default function Navbar() {
             <NavLinkMobile to="/converter" label="Text to 3D" onClick={toggleMobileMenu} />
             <NavLinkMobile to="/assistant" label="Assistant" onClick={toggleMobileMenu} />
             
+            {/* Mobile language selector */}
+            <div className="px-4 py-3 border-t border-border">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Language</span>
+                <LanguageSelector />
+              </div>
+            </div>
+
             {/* Mobile auth buttons */}
-            <div className="px-4 py-4">
+            <div className="px-4 py-4 border-t border-border">
               {auth && auth.user ? (
                 // User is signed in
                 <div className="space-y-3">
