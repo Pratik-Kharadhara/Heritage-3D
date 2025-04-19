@@ -6,15 +6,18 @@ import SignInPage from "./pages/sign-in";
 import SignUpPage from "./pages/sign-up";
 import SimpleModelViewer from "./pages/SimpleModelViewer"; // Import our simpler model viewer
 import AssistantPage from "./pages/AssistantPage"; // Import our heritage assistant page
+import HomePage from "./pages/home-page"; // New enhanced home page
+import ModelsPage from "./pages/models-page"; // New models showcase page
 import ConverterPage from "@/pages/converter-page";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState, useContext } from "react";
-import { Redirect } from "wouter";
+import { useState, useContext, useEffect } from "react";
+import { Redirect, useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
 
-// Import AuthContext and AuthProvider
+// Import context providers
 import { AuthContext, AuthProvider } from "./context/auth-context";
+import { LanguageProvider } from "./context/language-context";
 
 // Simple protected route component without Clerk
 const ProtectedRoute = ({ component: Component, ...rest }) => {
@@ -38,9 +41,18 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 };
 
 function Router() {
+  const [location] = useLocation();
+  
+  // Scroll to top on page change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  
   return (
     <Switch>
-      <Route path="/" component={SimpleModelViewer}/>
+      <Route path="/" component={HomePage} />
+      <Route path="/models" component={ModelsPage} />
+      <Route path="/viewer" component={SimpleModelViewer} />
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/sign-up" component={SignUpPage} />
       <Route path="/converter">
@@ -55,17 +67,20 @@ function Router() {
 
 function App() {
   return (
-    <AuthProvider>
-      <TooltipProvider>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
-            <Router />
-          </main>
-          <Footer />
-        </div>
-      </TooltipProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              <Router />
+            </main>
+            <Footer />
+            <Toaster />
+          </div>
+        </TooltipProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 

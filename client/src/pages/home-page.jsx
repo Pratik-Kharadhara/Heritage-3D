@@ -1,403 +1,354 @@
-import { useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'wouter';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Axis3d, Wand2 } from 'lucide-react';
+import { ArrowRight, Info, BookOpen, History } from 'lucide-react';
+import { useLanguage } from '@/context/language-context';
 import ThreeJSCanvas from '@/components/ThreeJSCanvas';
-import ModelCard from '@/components/ModelCard';
-import TourCard from '@/components/TourCard';
+import { apiRequest } from '@/lib/queryClient';
 
-// Featured models data with actual 3D model URLs
-const featuredModels = [
+// Simulated featured models (to be replaced with actual API data)
+const FEATURED_MODELS = [
   {
     id: 1,
-    name: "Taj Mahal",
-    description: "Built by Emperor Shah Jahan in memory of his wife Mumtaz Mahal, this ivory-white marble mausoleum is one of the world's most iconic monuments.",
-    location: "Agra, Uttar Pradesh",
-    userId: 1,
-    modelUrl: "/models/Tajmahal_model_2.obj",
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    createdAt: "2023-01-01"
+    name: 'Taj Mahal',
+    description: 'One of the seven wonders of the world, built by Emperor Shah Jahan in memory of his beloved wife.',
+    imageUrl: '/images/tajmahal.jpg',
+    modelUrl: 'Tajmahal_model_2.obj',
   },
   {
     id: 2,
-    name: "Qutub Minar",
-    description: "A soaring 73-meter minaret built in the early 13th century, featuring intricate carvings and inscriptions from the Delhi Sultanate period.",
-    location: "Delhi, India",
-    userId: 1,
-    modelUrl: "/models/Qutub_Minar_3d_Model.obj",
-    imageUrl: "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80",
-    createdAt: "2023-01-02"
+    name: 'Qutub Minar',
+    description: 'The tallest brick minaret in the world, built in the early 13th century.',
+    imageUrl: '/images/qutubminar.jpg',
+    modelUrl: 'Qutub_Minar_3d_Model.obj',
   },
-  {
-    id: 3,
-    name: "Hawa Mahal",
-    description: "Known as the \"Palace of Winds,\" this five-story palace features 953 small windows decorated with intricate latticework.",
-    location: "Jaipur, Rajasthan",
-    userId: 1,
-    modelUrl: null, // No model yet
-    imageUrl: "https://images.unsplash.com/photo-1590733840202-2419ecf9b2e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    createdAt: "2023-01-03"
-  }
 ];
 
-// Featured tour
-const featuredTour = {
-  id: 1,
-  name: "Taj Mahal: Moonlight Tour",
-  description: "Experience the breathtaking beauty of the Taj Mahal under moonlight. This virtual tour takes you through the marble mausoleum and its gardens when they're bathed in the ethereal glow of the moon.",
-  location: "Agra, Uttar Pradesh",
-  imageUrl: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-  rating: "4.8",
-  reviewCount: 240,
-  featured: true
-};
+// TypeWriter component for animated text
+function TypeWriter({ text, speed = 60, onComplete }) {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
 
-// Additional tours
-const additionalTours = [
-  {
-    id: 2,
-    name: "Ellora Caves",
-    location: "Aurangabad, Maharashtra",
-    imageUrl: "https://images.unsplash.com/photo-1602313306079-c96725738c58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
-  },
-  {
-    id: 3,
-    name: "Mysore Palace",
-    location: "Mysore, Karnataka",
-    imageUrl: "https://images.unsplash.com/photo-1592635196078-9fbb53ab45e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-  }
-];
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      }, speed);
+      
+      return () => clearTimeout(timeout);
+    } else if (!isComplete) {
+      setIsComplete(true);
+      onComplete && onComplete();
+    }
+  }, [currentIndex, text, speed, isComplete, onComplete]);
 
-function HomePage() {
-  const [activeModelId, setActiveModelId] = useState(null);
-  const [selectedModel, setSelectedModel] = useState(null);
-  const { scrollYProgress } = useScroll();
-  
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-  
-  const handleModelClick = (modelId) => {
-    setSelectedModel(featuredModels.find(model => model.id === modelId));
-    setActiveModelId(modelId);
-  };
-  
+  return <span>{displayText}<span className="animate-pulse">|</span></span>;
+}
+
+// Blur in image component
+function BlurImage({ src, alt, className, delay = 0 }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
-    <div className="overflow-x-hidden">
-      {/* Hero Section */}
-      <motion.section 
-        id="home" 
-        className="relative py-20 min-h-screen flex items-center overflow-hidden"
-        style={{ opacity: heroOpacity, scale: heroScale }}
-      >
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80')] bg-cover bg-center opacity-10 dark:opacity-5"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col lg:flex-row items-center">
-            <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <motion.div 
-                className="max-w-xl"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-6">
-                  Explore India's Heritage in <span className="text-primary">3D</span>
-                </h1>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                  Transform text descriptions into detailed 3D models of India's cultural landmarks and monuments. Experience the rich heritage through our interactive virtual tours.
-                </p>
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  <Button 
-                    size="lg" 
-                    className="group"
-                    asChild
-                  >
-                    <Link href="/models">
-                      <Axis3d className="mr-2 h-5 w-5" /> 
-                      View 3D Models
-                    </Link>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="lg"
-                    asChild
-                  >
-                    <Link href="/converter">
-                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
-                      Create 3D Model
-                    </Link>
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-            
-            <div className="lg:w-1/2 flex justify-center">
-              <motion.div 
-                className="relative w-full max-w-lg h-80 md:h-[450px]"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/20 dark:to-secondary/20 backdrop-blur-sm shadow-xl overflow-hidden flex items-center justify-center">
-                  {selectedModel ? (
-                    <ThreeJSCanvas modelUrl={selectedModel.modelUrl} />
-                  ) : (
-                    <ThreeJSCanvas placeholder={true} />
-                  )}
-                  {!selectedModel && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-background/80 flex items-center justify-center shadow-lg">
-                        <Axis3d className="h-8 w-8 text-primary" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Floating Elements */}
-                <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-secondary rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
-                <div className="absolute -top-4 -right-4 w-32 h-32 bg-primary rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
-              </motion.div>
-            </div>
-          </div>
-          
-          {/* Stats */}
-          <motion.div 
-            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+    <motion.img
+      src={src}
+      alt={alt}
+      className={`${className} transition-all duration-1000 ${isLoaded ? 'blur-0' : 'blur-lg'}`}
+      initial={{ opacity: 0, filter: 'blur(20px)' }}
+      animate={{ 
+        opacity: isLoaded ? 1 : 0,
+        filter: isLoaded ? 'blur(0px)' : 'blur(20px)'
+      }}
+      transition={{ 
+        opacity: { delay, duration: 0.8 },
+        filter: { delay: delay + 0.2, duration: 1.2 }
+      }}
+      onLoad={() => setIsLoaded(true)}
+    />
+  );
+}
+
+export default function HomePage() {
+  const { t } = useLanguage();
+  const [models, setModels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeModel, setActiveModel] = useState(null);
+  const [typingComplete, setTypingComplete] = useState(false);
+  const modelViewerRef = useRef(null);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiRequest('GET', '/api/models');
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          setModels(data);
+          setActiveModel(data[0]);
+        } else {
+          // Fallback to featured models if API returns empty
+          setModels(FEATURED_MODELS);
+          setActiveModel(FEATURED_MODELS[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching models:', error);
+        // Fallback to featured models on error
+        setModels(FEATURED_MODELS);
+        setActiveModel(FEATURED_MODELS[0]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchModels();
+  }, []);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.5,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6 } },
+  };
+
+  const handleModelChange = (model) => {
+    setActiveModel(model);
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-12">
+      {/* Hero Section with Typewriter and 3D Preview */}
+      <section className="mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col justify-center"
           >
-            {[
-              { value: "20+", label: "Historical Sites", color: "text-primary" },
-              { value: "5K+", label: "3D Models Created", color: "text-secondary" },
-              { value: "800+", label: "Virtual Tours", color: "text-yellow-600" },
-              { value: "24/7", label: "Knowledge Access", color: "text-primary" }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <p className={`font-bold text-3xl md:text-4xl ${stat.color}`}>{stat.value}</p>
-                <p className="text-muted-foreground mt-2">{stat.label}</p>
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+              <TypeWriter 
+                text={t('heroTitle')}
+                speed={40}
+                onComplete={() => setTypingComplete(true)}
+              />
+            </h1>
+            
+            <AnimatePresence>
+              {typingComplete && (
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-lg text-muted-foreground mb-8"
+                >
+                  {t('heroSubtitle')}
+                </motion.p>
+              )}
+            </AnimatePresence>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <AnimatePresence>
+                {typingComplete && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
+                    >
+                      <Link href="/models">
+                        <Button size="lg" className="btn-animated">
+                          {t('exploreButton')}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </motion.div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, delay: 0.4 }}
+                    >
+                      <Link href="/assistant">
+                        <Button variant="outline" size="lg" className="btn-animated">
+                          <Info className="mr-2 h-4 w-4" />
+                          {t('learnMore')}
+                        </Button>
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="bg-muted/30 p-4 rounded-2xl shadow-lg h-[500px] relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-background/70 to-transparent z-10 pointer-events-none" />
+            
+            {activeModel && (
+              <div className="w-full h-full" ref={modelViewerRef}>
+                <ThreeJSCanvas modelUrl={activeModel.modelUrl} />
               </div>
-            ))}
+            )}
+            
+            <div className="absolute bottom-4 left-4 right-4 z-20">
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {models.map((model) => (
+                  <motion.button
+                    key={model.id}
+                    whileHover={{ y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleModelChange(model)}
+                    className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap ${
+                      activeModel?.id === model.id
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted/50 hover:bg-muted/80'
+                    }`}
+                  >
+                    {model.name}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+      
+      {/* Features Section */}
+      <motion.section
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="mb-20"
+      >
+        <motion.h2 
+          variants={itemVariants}
+          className="text-3xl font-bold text-center mb-12"
+        >
+          Explore Indian Heritage
+        </motion.h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div variants={itemVariants}>
+            <Card className="h-full card-3d">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-4 rounded-full mb-4">
+                  <History className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Rich History</h3>
+                <p className="text-muted-foreground">
+                  Discover the fascinating history behind iconic Indian monuments and cultural sites.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          <motion.div variants={itemVariants}>
+            <Card className="h-full card-3d">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-4 rounded-full mb-4">
+                  <BookOpen className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">AI Assistant</h3>
+                <p className="text-muted-foreground">
+                  Ask questions and get detailed information about any Indian heritage monument.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          <motion.div variants={itemVariants}>
+            <Card className="h-full card-3d">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-4 rounded-full mb-4">
+                  <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L17 8H14V16H10V8H7L12 3Z" fill="currentColor" />
+                    <path d="M19 13H22L17 18L12 13H15V5H19V13Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">3D Models</h3>
+                <p className="text-muted-foreground">
+                  Explore detailed 3D models of monuments with interactive controls and immersive views.
+                </p>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </motion.section>
       
-      {/* Featured Models Section */}
-      <section id="models" className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Explore India's Landmarks in 3D
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Immerse yourself in the intricate architecture and historical beauty of India's most iconic monuments.
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredModels.map((model, index) => (
-              <motion.div
-                key={model.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true, margin: "-100px" }}
-              >
-                <ModelCard 
-                  model={model} 
-                  onClick={() => handleModelClick(model.id)} 
-                />
-              </motion.div>
-            ))}
-          </div>
-          
-          <motion.div 
-            className="mt-12 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/models">
-                View All 3D Models
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 ml-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-      
-      {/* Text to 3D Converter Section Preview */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10"></div>
+      {/* Featured Models Section (with Blur Effect) */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="mb-20"
+      >
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Featured Monuments
+        </h2>
         
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        
-        <div className="container mx-auto px-4 relative">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Transform Text to 3D Models
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Enter detailed descriptions of Indian heritage monuments and watch as our AI generates interactive 3D models.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <div className="flex justify-center">
-              <Button size="lg" className="group" asChild>
-                <Link href="/converter">
-                  <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
-                  Try Text to 3D Converter
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-      
-      {/* Virtual Tour Section */}
-      <section className="py-20 relative overflow-hidden bg-muted/30">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-muted pointer-events-none"></div>
-        
-        <div className="container mx-auto px-4 relative">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Virtual Heritage Tours
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Immerse yourself in 360° virtual tours of India's most fascinating historical sites and monuments.
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Featured Tour */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {FEATURED_MODELS.map((model, index) => (
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="row-span-2"
+              key={model.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="relative overflow-hidden rounded-xl group"
             >
-              <TourCard tour={featuredTour} featured={true} />
+              <div className="aspect-video overflow-hidden">
+                <BlurImage
+                  src={model.imageUrl || `/assets/${model.id}.jpg`}
+                  alt={model.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  delay={index * 0.3}
+                />
+              </div>
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <h3 className="text-2xl font-bold text-white mb-2">{model.name}</h3>
+                <p className="text-white/80 mb-4 line-clamp-2">{model.description}</p>
+                <Link href={`/models/${model.id}`}>
+                  <Button variant="default" className="w-full sm:w-auto">
+                    View 3D Model
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
-            
-            {/* Additional Tours */}
-            <div className="grid grid-cols-1 gap-8">
-              {additionalTours.map((tour, index) => (
-                <motion.div
-                  key={tour.id}
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                >
-                  <TourCard tour={tour} />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-          
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <Button variant="outline" size="lg">
-              Explore All Virtual Tours
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </Button>
-          </motion.div>
+          ))}
         </div>
-      </section>
-      
-      {/* Knowledge Hub Preview */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Heritage Knowledge Hub
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ask questions about Indian monuments, cultural traditions, historical events, and architectural styles.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="flex justify-center"
-          >
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/assistant">
-                Explore Knowledge Assistant
-              </Link>
+        
+        <div className="text-center mt-12">
+          <Link href="/models">
+            <Button variant="outline" size="lg" className="btn-animated">
+              View All Models
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          </motion.div>
+          </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }
-
-export default HomePage;
