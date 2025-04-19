@@ -17,7 +17,6 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
