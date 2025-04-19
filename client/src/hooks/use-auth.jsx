@@ -4,7 +4,7 @@ import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient.js";
 import { useToast } from "@/hooks/use-toast";
 
 // Create the auth context
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const { toast } = useToast();
