@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { EyeIcon, Search, X, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useLanguage } from '@/context/language-context';
-import EnhancedModelViewer from '@/components/EnhancedModelViewer';
+import RealisticModelViewer from '@/components/RealisticModelViewer';
 
 // Fallback models if API fails
 const FALLBACK_MODELS = [
@@ -42,7 +42,7 @@ const ModelCard = ({ model, index, onClick }) => {
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="h-full"
     >
-      <Card className="h-full overflow-hidden animated-border group">
+      <Card className="h-full overflow-hidden neon-card card-3d group">
         <div className="relative aspect-video overflow-hidden">
           {model.imageUrl ? (
             <img 
@@ -67,7 +67,7 @@ const ModelCard = ({ model, index, onClick }) => {
             <Button 
               size="sm" 
               variant="secondary" 
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 glow-button-accent"
               onClick={() => onClick(model)}
             >
               <EyeIcon className="h-4 w-4 mr-2" />
@@ -110,7 +110,7 @@ const ModelPreviewModal = ({ model, onClose }) => {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: 'spring', damping: 20 }}
-        className="bg-card rounded-xl overflow-hidden w-full max-w-6xl max-h-[90vh] flex flex-col"
+        className="glass-panel neon-border overflow-hidden w-full max-w-6xl max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center border-b p-4">
@@ -126,7 +126,7 @@ const ModelPreviewModal = ({ model, onClose }) => {
         </div>
         
         <div className="flex-1 min-h-[300px] md:min-h-[500px] overflow-hidden">
-          <EnhancedModelViewer modelName={model.name} />
+          <RealisticModelViewer modelName={model.name} />
         </div>
         
         <div className="p-4 bg-muted/20 border-t">
@@ -234,7 +234,7 @@ export default function ModelsPage() {
         transition={{ duration: 0.5 }}
         className="mb-10 text-center"
       >
-        <h1 className="text-4xl font-bold mb-4">{t('modelsTitle')}</h1>
+        <h1 className="text-4xl font-bold mb-4 neon-text-intense">{t('modelsTitle')}</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           {t('modelsSubtitle')}
         </p>
