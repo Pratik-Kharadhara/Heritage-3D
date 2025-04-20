@@ -141,8 +141,8 @@ export default function AssistantPage() {
           <Card className="bg-card shadow-xl overflow-hidden border">
             <CardHeader className="flex flex-row items-center justify-between py-4 px-6 border-b">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-white" />
+                <div className="w-10 h-10 rounded-full liquid-gradient-button flex items-center justify-center relative overflow-hidden">
+                  <Bot className="h-5 w-5 text-white relative z-10" />
                 </div>
                 <span className="ml-3 font-medium text-card-foreground">Heritage Assistant</span>
               </div>
@@ -168,8 +168,8 @@ export default function AssistantPage() {
                       className={`flex mb-4 ${message.role === 'user' ? 'justify-end' : ''}`}
                     >
                       {message.role === 'assistant' && (
-                        <div className="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
-                          <Bot className="h-4 w-4 text-white" />
+                        <div className="w-8 h-8 rounded-full liquid-gradient-button flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                          <Bot className="h-4 w-4 text-white relative z-10" />
                         </div>
                       )}
                       
@@ -197,8 +197,8 @@ export default function AssistantPage() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex mb-4"
                     >
-                      <div className="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
-                        <Bot className="h-4 w-4 text-white" />
+                      <div className="w-8 h-8 rounded-full liquid-gradient-button flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                        <Bot className="h-4 w-4 text-white relative z-10" />
                       </div>
                       <div className="mx-3 p-4 rounded-lg bg-muted text-foreground rounded-tl-none max-w-[80%]">
                         <div className="flex space-x-2">
@@ -227,11 +227,11 @@ export default function AssistantPage() {
                   />
                   <Button
                     size="icon"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 rounded-full h-8 w-8"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 rounded-full h-8 w-8 liquid-gradient-button"
                     onClick={() => handleSendMessage()}
                     disabled={isLoading || !inputValue.trim()}
                   >
-                    <SendHorizontal className="h-4 w-4" />
+                    <SendHorizontal className="h-4 w-4 text-white relative z-10" />
                   </Button>
                 </div>
                 
@@ -246,7 +246,7 @@ export default function AssistantPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs rounded-full"
+                        className="text-xs rounded-full liquid-gradient-border"
                         onClick={() => handleSendMessage(question)}
                         disabled={isLoading}
                       >
