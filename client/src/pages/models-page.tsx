@@ -280,7 +280,10 @@ export default function ModelsPage() {
             
             <div className="flex-grow">
               <div className="h-96">
-                <ModelViewer modelUrl={selectedModelData?.modelUrl} />
+                <ModelViewer 
+                  modelUrl={selectedModelData?.modelUrl} 
+                  name={selectedModelData?.name} 
+                />
               </div>
               
               <div className="p-6">
