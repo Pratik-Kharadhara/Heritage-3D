@@ -12,7 +12,10 @@ interface ModelCardProps {
 const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
   return (
     <motion.div 
-      className="animated-border neon-card card-3d rounded-xl overflow-hidden relative group"
+      className={`
+        animated-border neon-card card-3d rounded-xl overflow-hidden relative group
+        ${model.name?.includes('Taj Mahal') ? 'marble-texture' : 'sandstone-texture'}
+      `}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ 
@@ -27,7 +30,11 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
     >
       <div className="relative h-56 overflow-hidden">
         <motion.img 
-          src={model.imageUrl || "/attached_assets/qutub1_042717100950.jpg"} 
+          src={
+            model.name?.includes("Taj Mahal") 
+              ? "/attached_assets/photo-1564507592333-c60657eea523.jpeg"
+              : "/attached_assets/qutub1_042717100950.jpg"
+          } 
           alt={model.name || "3D Model"} 
           className="w-full h-full object-cover transition-transform duration-700" 
           whileHover={{ scale: 1.1 }}
@@ -84,9 +91,21 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
             </div>
             
             {model.material && (
-              <div className="flex items-center">
-                <Badge variant="outline" className="text-xs bg-background/20 backdrop-blur-sm border-primary/20">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex flex-wrap items-center mt-1 gap-2">
+                <Badge 
+                  variant="outline" 
+                  className={`
+                    text-xs bg-background/20 backdrop-blur-sm border 
+                    ${model.name?.includes('Taj Mahal') 
+                      ? 'border-blue-300/30 bg-blue-500/10 text-blue-200' 
+                      : 'border-amber-300/30 bg-amber-500/10 text-amber-200'}
+                    shadow-glow transition-all duration-300 animate-in fade-in
+                  `}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`
+                    h-3 w-3 mr-1 
+                    ${model.name?.includes('Taj Mahal') ? 'text-blue-300' : 'text-amber-300'}
+                  `} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                     <polyline points="2 17 12 22 22 17"></polyline>
                     <polyline points="2 12 12 17 22 12"></polyline>
@@ -94,7 +113,7 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
                   {model.material}
                 </Badge>
                 {model.style && (
-                  <Badge variant="outline" className="text-xs ml-2 bg-background/20 backdrop-blur-sm border-secondary/20">
+                  <Badge variant="outline" className="text-xs bg-background/20 backdrop-blur-sm border-secondary/20 shadow-glow">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
