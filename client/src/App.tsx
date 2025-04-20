@@ -17,6 +17,7 @@ function Router() {
       <Route path="/" component={HomePage}/>
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/models" component={ModelsPage} />
+      <ProtectedRoute path="/models/:id" component={ModelsPage} />
       <ProtectedRoute path="/converter" component={ConverterPage} />
       <ProtectedRoute path="/assistant" component={AssistantPage} />
       {/* Fallback to 404 */}

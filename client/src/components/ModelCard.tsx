@@ -3,6 +3,7 @@ import { Axis3d, Eye, Landmark, Calendar, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Model } from '@shared/schema';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'wouter';
 
 interface ModelCardProps {
   model: Partial<Model>;
@@ -125,15 +126,43 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
             )}
           </div>
           
-          <Button 
-            variant="default" 
-            size="sm" 
-            className="glow-button w-full flex items-center justify-center gap-2 mt-2"
-            onClick={onClick}
-          >
-            <Eye className="h-4 w-4" /> 
-            <span className="font-medium">Explore in 3D</span>
-          </Button>
+          {model.id ? (
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="glow-button flex-1 flex items-center justify-center gap-2 mt-2"
+                onClick={onClick}
+              >
+                <Eye className="h-4 w-4" /> 
+                <span className="font-medium">Quick View</span>
+              </Button>
+              
+              <Link href={`/models/${model.id}`}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1 flex items-center justify-center gap-2 mt-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                  </svg>
+                  <span className="font-medium">Details</span>
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="glow-button w-full flex items-center justify-center gap-2 mt-2"
+              onClick={onClick}
+            >
+              <Eye className="h-4 w-4" /> 
+              <span className="font-medium">Explore in 3D</span>
+            </Button>
+          )}
         </div>
       </div>
       

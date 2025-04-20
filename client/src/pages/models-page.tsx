@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRoute } from 'wouter';
 import { ChevronDown, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -95,14 +96,23 @@ export default function ModelsPage() {
     type: 'all'
   });
   
-  // Handle URL query parameters for direct access to a model
+  // Handle URL parameters for direct access to a model
+  const [, params] = useRoute('/models/:id');
+  
+  // Initialize model from URL parameters
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const modelId = params.get('id');
-    if (modelId) {
-      setSelectedModel(parseInt(modelId, 10));
+    // Check for route parameter first
+    if (params && params.id) {
+      setSelectedModel(parseInt(params.id, 10));
+    } else {
+      // Fallback to query parameter for backward compatibility
+      const queryParams = new URLSearchParams(window.location.search);
+      const queryModelId = queryParams.get('id');
+      if (queryModelId) {
+        setSelectedModel(parseInt(queryModelId, 10));
+      }
     }
-  }, []);
+  }, [params]);
   
   // Filter models based on search query and filters
   const filteredModels = models.filter(model => {
