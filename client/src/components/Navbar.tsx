@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon, Axis3d, Home, Cube, Wand2, BookOpen } from 'lucide-react';
+import { Menu, X, Sun, Moon, Axis3d, Home, Box, Wand2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/ui/theme-provider';
 import { useAuth } from '@/hooks/use-auth';
@@ -27,7 +27,7 @@ const Navbar = () => {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/models', label: '3D Models', icon: Cube },
+    { href: '/models', label: '3D Models', icon: Box },
     { href: '/converter', label: 'Text to 3D', icon: Wand2 },
     { href: '/assistant', label: 'Knowledge Hub', icon: BookOpen }
   ];

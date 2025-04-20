@@ -200,8 +200,8 @@ export default function ConverterPage() {
                   className="h-full"
                 >
                   <div className="animated-border h-full">
-                    {modelName ? (
-                      <RealisticModelViewer modelName={modelName} />
+                    {modelUrl ? (
+                      <RealisticModelViewer modelUrl={modelUrl} name={modelName} isPreview={true} />
                     ) : (
                       <div className="bg-muted/20 flex items-center justify-center h-full w-full rounded-lg">
                         <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center">

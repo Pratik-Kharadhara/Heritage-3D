@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Dark mode by default - for a more dramatic neon effect */
     --background: 240 10% 4%;
     --foreground: 0 0% 98%;
     
@@ -33,6 +34,37 @@
     --ring: 240 4.9% 83.9%;
     
     --radius: 0.5rem;
+  }
+
+  .light {
+    /* Enhanced light mode for better UI and neon contrast */
+    --background: 218 25% 95%;
+    --foreground: 220 40% 10%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 40% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 40% 10%;
+    
+    --primary: 217 91% 45%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 228 60% 50%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 220 10% 92%;
+    --muted-foreground: 220 10% 40%;
+    
+    --accent: 262 80% 45%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 80% 45%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 220 10% 85%;
+    --input: 220 10% 90%;
+    --ring: 220 40% 20%;
   }
 }
 
@@ -409,6 +441,41 @@
     border-radius: 0.5rem;
   }
   
+  /* Enhanced glass panel for light mode */
+  .light .glass-panel {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 8px 32px rgba(15, 23, 42, 0.1),
+      0 4px 8px rgba(15, 23, 42, 0.05);
+  }
+  
+  /* Shadow glow effect */
+  .shadow-glow {
+    box-shadow: 
+      0 5px 20px -5px rgba(59, 130, 246, 0.2),
+      0 10px 30px -10px rgba(59, 130, 246, 0.1);
+  }
+  
+  .shadow-glow-accent {
+    box-shadow: 
+      0 5px 20px -5px rgba(139, 92, 246, 0.2),
+      0 10px 30px -10px rgba(139, 92, 246, 0.1);
+  }
+  
+  .light .shadow-glow {
+    box-shadow: 
+      0 5px 30px -5px rgba(29, 78, 216, 0.25),
+      0 8px 60px -8px rgba(29, 78, 216, 0.15);
+  }
+  
+  .light .shadow-glow-accent {
+    box-shadow: 
+      0 5px 30px -5px rgba(109, 40, 217, 0.25),
+      0 8px 60px -8px rgba(109, 40, 217, 0.15);
+  }
+  
   /* Gradient backgrounds */
   .bg-gradient-dark {
     background: linear-gradient(to bottom right, #0f172a, #1e293b);
@@ -420,6 +487,31 @@
   
   .bg-gradient-accent {
     background: linear-gradient(135deg, #4c1d95 0%, #8b5cf6 100%);
+  }
+
+  /* Enhanced light mode effects */
+  .light .neon-text {
+    text-shadow: 
+      0 0 4px #1d4ed8,
+      0 0 8px #2563eb,
+      0 0 12px #3b82f6;
+    color: #1e3a8a;
+  }
+  
+  .light .neon-text-accent {
+    text-shadow: 
+      0 0 4px #7c3aed,
+      0 0 8px #8b5cf6; 
+    color: #6d28d9;
+  }
+  
+  .light .neon-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.2),
+      0 0 40px rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
   }
   
   /* 3D Card effect */
