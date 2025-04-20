@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center relative">
           <Link href="/" className="flex items-center space-x-2 group">
             <motion.div 
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/80 to-secondary/80 flex items-center justify-center neon-border overflow-hidden relative"
+              className="w-10 h-10 rounded-full liquid-gradient-background flex items-center justify-center liquid-gradient-border overflow-hidden relative"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -159,9 +159,9 @@ const Navbar = () => {
                 <Button
                   variant="destructive"
                   onClick={() => logoutMutation.mutate()}
-                  className="hidden md:flex relative overflow-hidden glow-button"
+                  className="hidden md:flex relative overflow-hidden liquid-gradient-button"
                 >
-                  <span className="relative z-10">Logout</span>
+                  <span className="relative z-10 text-white">Logout</span>
                 </Button>
               </motion.div>
             ) : (
@@ -172,7 +172,7 @@ const Navbar = () => {
                 <Button 
                   variant="default" 
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="hidden md:flex glow-button-accent relative overflow-hidden"
+                  className="hidden md:flex liquid-gradient-button relative overflow-hidden"
                 >
                   <span className="relative z-10">Login</span>
                 </Button>
@@ -320,7 +320,7 @@ const Navbar = () => {
                         logoutMutation.mutate();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full glow-button relative overflow-hidden"
+                      className="w-full liquid-gradient-button relative overflow-hidden"
                       size="lg"
                     >
                       <span className="relative z-10">Logout</span>
@@ -332,7 +332,7 @@ const Navbar = () => {
                         setIsAuthModalOpen(true);
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full glow-button-accent relative overflow-hidden"
+                      className="w-full liquid-gradient-button relative overflow-hidden"
                       size="lg"
                     >
                       <span className="relative z-10">Login</span>
