@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { EyeIcon, Search, X, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useLanguage } from '@/context/language-context';
-import SimpleModelViewer from '@/components/SimpleModelViewer';
+import BasicModelViewer from '@/components/BasicModelViewer';
 
 // Fallback models if API fails
 const FALLBACK_MODELS = [
@@ -52,7 +52,7 @@ const ModelCard = ({ model, index, onClick }) => {
             />
           ) : (
             <div className="w-full h-full bg-muted/50 flex items-center justify-center">
-              <SimpleModelViewer modelName={model.name} isPreview={true} />
+              <BasicModelViewer modelName={model.name} isPreview={true} />
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -118,7 +118,7 @@ const ModelPreviewModal = ({ model, onClose }) => {
         </div>
         
         <div className="flex-1 min-h-[300px] md:min-h-[500px] overflow-hidden">
-          <SimpleModelViewer modelName={model.name} />
+          <BasicModelViewer modelName={model.name} />
         </div>
         
         <div className="p-4 bg-muted/20 border-t">

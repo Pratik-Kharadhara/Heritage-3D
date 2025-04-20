@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Wand2 } from 'lucide-react';
-import SimpleModelViewer from '@/components/SimpleModelViewer';
+import BasicModelViewer from '@/components/BasicModelViewer';
 import { 
   Card, 
   CardContent 
@@ -196,7 +196,7 @@ export default function ConverterPage() {
                   className="h-full"
                 >
                   <div className="animated-border h-full">
-                    <SimpleModelViewer modelName={modelName} isPreview={true} />
+                    <BasicModelViewer modelName={modelName} isPreview={true} />
                   </div>
                 </motion.div>
               </div>
