@@ -96,14 +96,14 @@ export default function ConverterPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold mb-4 neon-text-intense">Transform Text to 3D Models</h1>
+          <h1 className="text-4xl font-bold mb-4 liquid-gradient">Transform Text to 3D Models</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Enter detailed descriptions of Indian heritage monuments and watch as our AI generates interactive 3D models.
           </p>
         </motion.div>
         
         <div className="max-w-4xl mx-auto">
-          <Card className="glass-panel overflow-hidden neon-border">
+          <Card className="glass-panel overflow-hidden liquid-gradient-border">
             <CardContent className="p-6 md:p-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Input Section */}
@@ -112,7 +112,7 @@ export default function ConverterPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h3 className="font-semibold text-xl neon-text mb-6">Describe Your Monument</h3>
+                  <h3 className="font-semibold text-xl liquid-gradient mb-6">Describe Your Monument</h3>
                   
                   <div className="space-y-6">
                     <div className="space-y-2">
@@ -160,12 +160,12 @@ export default function ConverterPage() {
                     
                     <Button 
                       onClick={handleGenerate} 
-                      className="w-full glow-button-accent"
+                      className="w-full liquid-gradient-button relative overflow-hidden"
                       disabled={isGenerating}
                     >
                       {isGenerating ? (
                         <>
-                          <span className="animate-spin mr-2">
+                          <span className="animate-spin mr-2 relative z-10">
                             <svg 
                               xmlns="http://www.w3.org/2000/svg" 
                               width="24" 
@@ -180,12 +180,12 @@ export default function ConverterPage() {
                               <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
                             </svg>
                           </span>
-                          Generating...
+                          <span className="relative z-10">Generating...</span>
                         </>
                       ) : (
                         <>
-                          <Wand2 className="mr-2 h-5 w-5" />
-                          Generate 3D Model
+                          <Wand2 className="mr-2 h-5 w-5 relative z-10" />
+                          <span className="relative z-10">Generate 3D Model</span>
                         </>
                       )}
                     </Button>
@@ -199,14 +199,14 @@ export default function ConverterPage() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="h-full"
                 >
-                  <div className="animated-border h-full">
+                  <div className="liquid-gradient-border h-full">
                     {modelUrl ? (
                       <RealisticModelViewer modelUrl={modelUrl} name={modelName} isPreview={true} />
                     ) : (
                       <div className="bg-muted/20 flex items-center justify-center h-full w-full rounded-lg">
                         <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center">
-                          <div className="w-16 h-16 rounded-full bg-muted/40 flex items-center justify-center">
-                            <Wand2 className="h-8 w-8 text-muted-foreground" />
+                          <div className="w-16 h-16 rounded-full liquid-gradient-button flex items-center justify-center relative overflow-hidden">
+                            <Wand2 className="h-8 w-8 text-white relative z-10" />
                           </div>
                           <span className="text-muted-foreground">
                             {modelName ? `Preview for "${modelName}" will appear here` : "Enter details and click generate"}
