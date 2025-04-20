@@ -20,6 +20,9 @@ export const models = pgTable("models", {
   userId: integer("user_id").notNull(),
   modelUrl: text("model_url"),
   imageUrl: text("image_url"),
+  year: text("year"),
+  style: text("style"),
+  featured: boolean("featured"),
   createdAt: text("created_at").notNull(),
 });
 
@@ -29,9 +32,13 @@ export const tours = pgTable("tours", {
   description: text("description").notNull(),
   location: text("location").notNull(),
   imageUrl: text("image_url"),
-  rating: text("rating"),
+  rating: integer("rating"),
   reviewCount: integer("review_count"),
   featured: boolean("featured"),
+  duration: text("duration"),
+  availability: text("availability"),
+  groupSize: text("group_size"),
+  createdAt: text("created_at").notNull().default(new Date().toISOString()),
 });
 
 export const insertUserSchema = createInsertSchema(users)
