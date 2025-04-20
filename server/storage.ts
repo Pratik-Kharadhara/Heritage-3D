@@ -142,7 +142,7 @@ export class MemStorage implements IStorage {
         location: "Agra, Uttar Pradesh",
         userId: 1,
         modelUrl: "/models/Tajmahal_model_2.obj",
-        imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
+        imageUrl: "/images/photo-1564507592333-c60657eea523.jpeg",
         createdAt: "2023-01-01"
       },
       {
@@ -152,7 +152,7 @@ export class MemStorage implements IStorage {
         location: "Delhi, India",
         userId: 1,
         modelUrl: "/models/Qutub_Minar_3d_Model.obj",
-        imageUrl: "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80",
+        imageUrl: "/images/qutub1_042717100950.jpg",
         createdAt: "2023-01-02"
       },
       {
