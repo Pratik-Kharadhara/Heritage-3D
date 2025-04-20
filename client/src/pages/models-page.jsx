@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { EyeIcon, Search, X, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useLanguage } from '@/context/language-context';
-import SimpleGeometryViewer from '@/components/SimpleGeometryViewer';
+import OBJModelViewer from '@/components/OBJModelViewer';
 
 // Fallback models if API fails
 const FALLBACK_MODELS = [
@@ -52,7 +52,15 @@ const ModelCard = ({ model, index, onClick }) => {
             />
           ) : (
             <div className="w-full h-full bg-muted/50 flex items-center justify-center">
-              <SimpleGeometryViewer modelName={model.name} />
+              {/* Placeholder for when no image is available */}
+              <div className="bg-muted/40 flex items-center justify-center h-full w-full">
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground text-xl">3D</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{model.name}</span>
+                </div>
+              </div>
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -118,7 +126,7 @@ const ModelPreviewModal = ({ model, onClose }) => {
         </div>
         
         <div className="flex-1 min-h-[300px] md:min-h-[500px] overflow-hidden">
-          <SimpleGeometryViewer modelName={model.name} />
+          <OBJModelViewer modelUrl={model.modelUrl} />
         </div>
         
         <div className="p-4 bg-muted/20 border-t">
