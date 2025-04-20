@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Box, Info, ZoomIn, RotateCcw, RefreshCw, Loader } from 'lucide-react';
 import { Button } from './ui/button';
@@ -13,6 +13,19 @@ interface ModelViewerProps {
 const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, name }) => {
   const [is3DMode, setIs3DMode] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  
+  // Generate the correct URL for the model file
+  const fullModelUrl = useMemo(() => {
+    if (!modelUrl) return undefined;
+    
+    // Check if the URL already starts with http/https or /
+    if (modelUrl.startsWith('http') || modelUrl.startsWith('/')) {
+      return modelUrl;
+    }
+    
+    // Otherwise, prepend the path to the models folder
+    return `/models/${modelUrl}`;
+  }, [modelUrl]);
 
   // Get monument image for fallback
   const getMonumentImage = () => {
@@ -106,7 +119,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
       <div className="flex-1 relative overflow-hidden">
         {is3DMode ? (
           <div className="h-full relative">
-            <ThreeJSCanvas modelUrl={modelUrl} />
+            <ThreeJSCanvas modelUrl={fullModelUrl} />
             <div className="absolute bottom-4 right-4 flex flex-col gap-2">
               <Button
                 variant="secondary"

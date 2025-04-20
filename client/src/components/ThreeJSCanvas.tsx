@@ -2,15 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 
-// Add type imports for the modules that don't have declaration files
-interface OrbitControls {
-  update(): void;
-  dispose(): void;
-  enableDamping: boolean;
-  dampingFactor: number;
-  enableZoom: boolean;
-}
-
 interface ThreeJSCanvasProps {
   modelUrl?: string;
   placeholder?: boolean;
@@ -31,6 +22,8 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
         // Track whether the component is still mounted
         let isMounted = true;
         
+        // Dynamically import Three.js modules
+        const THREE = await import('three');
         const OrbitControlsModule = await import('three/examples/jsm/controls/OrbitControls');
         const OBJLoaderModule = await import('three/examples/jsm/loaders/OBJLoader');
         
