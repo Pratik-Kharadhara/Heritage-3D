@@ -61,8 +61,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div className="glass-panel p-6 rounded-xl">
             <Link href="/" className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center animated-border neon-border">
-                <Axis3d className="text-white text-xl" />
+              <div className="w-10 h-10 rounded-full relative overflow-hidden liquid-gradient-button flex items-center justify-center">
+                <Axis3d className="text-white text-xl relative z-10" />
               </div>
               <span className="font-bold text-xl text-white">Heritage<span className="neon-text-accent">3D</span></span>
             </Link>
@@ -77,11 +77,11 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className={`w-10 h-10 rounded-full backdrop-blur-sm bg-card/30 border border-white/10 flex items-center justify-center transition-all duration-300 ${social.color}`}
+                  className={`w-10 h-10 rounded-full relative overflow-hidden liquid-gradient-button flex items-center justify-center transition-all duration-300 ${social.color}`}
                   whileHover={{ y: -5, scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <social.icon className="h-5 w-5" />
+                  <social.icon className="h-5 w-5 text-white relative z-10" />
                 </motion.a>
               ))}
             </div>
@@ -158,11 +158,11 @@ const Footer = () => {
                 <Button
                   type="submit"
                   size="icon"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 glow-button-accent"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 liquid-gradient-button"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
+                    className="h-4 w-4 text-white"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"

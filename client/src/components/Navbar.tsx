@@ -174,7 +174,7 @@ const Navbar = () => {
                   onClick={() => setIsAuthModalOpen(true)}
                   className="hidden md:flex liquid-gradient-button relative overflow-hidden"
                 >
-                  <span className="relative z-10">Login</span>
+                  <span className="relative z-10 text-white">Login</span>
                 </Button>
               </motion.div>
             )}
@@ -323,7 +323,7 @@ const Navbar = () => {
                       className="w-full liquid-gradient-button relative overflow-hidden"
                       size="lg"
                     >
-                      <span className="relative z-10">Logout</span>
+                      <span className="relative z-10 text-white">Logout</span>
                     </Button>
                   ) : (
                     <Button 
@@ -335,7 +335,7 @@ const Navbar = () => {
                       className="w-full liquid-gradient-button relative overflow-hidden"
                       size="lg"
                     >
-                      <span className="relative z-10">Login</span>
+                      <span className="relative z-10 text-white">Login</span>
                     </Button>
                   )}
                 </motion.div>
