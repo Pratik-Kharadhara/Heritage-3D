@@ -4,6 +4,7 @@ import { Box, Info, ZoomIn, RotateCcw, RefreshCw, Loader } from 'lucide-react';
 import { Button } from './ui/button';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
 interface ModelViewerProps {
   modelUrl?: string;
@@ -38,6 +39,10 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Set up the 3D scene
   useEffect(() => {
     if (!canvasRef.current || !is3DMode) return;
+    
+    // Set loading state
+    setIsLoading(true);
+    setLoadingError(null);
     
     // Clean up previous scene
     if (rendererRef.current && canvasRef.current.contains(rendererRef.current.domElement)) {
@@ -75,91 +80,230 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
     controlsRef.current = controls;
     
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
     
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
     
-    // Create a monument model based on name
-    let geometry: THREE.BufferGeometry;
-    
-    if (name?.toLowerCase().includes('taj mahal') || modelUrl?.toLowerCase().includes('taj')) {
-      // Simple Taj Mahal-like dome
-      geometry = new THREE.CapsuleGeometry(1, 1.5, 8, 16);
-      
-      // Add a base
-      const baseGeometry = new THREE.BoxGeometry(3, 0.5, 3);
-      const baseMaterial = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
-      const base = new THREE.Mesh(baseGeometry, baseMaterial);
-      base.position.y = -1.5;
-      scene.add(base);
-      
-      // Add minarets
-      for (let i = 0; i < 4; i++) {
-        const pillarGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 8);
-        const pillarMaterial = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
-        const pillar = new THREE.Mesh(pillarGeometry, pillarMaterial);
-        
-        const angle = (i * Math.PI / 2);
-        pillar.position.x = 1.8 * Math.cos(angle);
-        pillar.position.z = 1.8 * Math.sin(angle);
-        pillar.position.y = -0.25;
-        scene.add(pillar);
-      }
-      
-    } else if (name?.toLowerCase().includes('qutub minar') || modelUrl?.toLowerCase().includes('qutub')) {
-      // Simple Qutub Minar-like tower
-      geometry = new THREE.CylinderGeometry(0.5, 0.8, 4, 12);
-      
-      // Add base
-      const baseGeometry = new THREE.CylinderGeometry(1.2, 1.2, 0.4, 12);
-      const baseMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
-      const base = new THREE.Mesh(baseGeometry, baseMaterial);
-      base.position.y = -2;
-      scene.add(base);
-      
-      // Add details to the tower
-      for (let i = 0; i < 3; i++) {
-        const ringGeometry = new THREE.TorusGeometry(0.5 + (0.1 * i), 0.1, 8, 24);
-        const ringMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = -1 + (i * 1.3);
-        scene.add(ring);
-      }
-      
-    } else {
-      // Generic monument
-      geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
-    }
-    
-    // Create material
-    const material = new THREE.MeshPhongMaterial({ 
-      color: 0xf5f5f5,
-      specular: 0x333333,
-      shininess: 30,
-    });
-    
-    // Create mesh
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight2.position.set(-1, -1, -1);
+    scene.add(directionalLight2);
     
     // Add grid helper
     const gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);
     
-    // Animation function
-    const animate = () => {
-      mesh.rotation.y += 0.005;
+    // Add temporary loading indicator
+    const loadingGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const loadingMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0x999999,
+      wireframe: true
+    });
+    const loadingSphere = new THREE.Mesh(loadingGeometry, loadingMaterial);
+    scene.add(loadingSphere);
+    
+    // Animation function for loading indicator
+    const animateLoading = () => {
+      loadingSphere.rotation.y += 0.02;
+      loadingSphere.rotation.x += 0.01;
       controls.update();
       renderer.render(scene, camera);
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = requestAnimationFrame(animateLoading);
     };
     
     // Start animation
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = requestAnimationFrame(animateLoading);
+    
+    // Load the actual 3D model if available
+    if (fullModelUrl) {
+      // Create the OBJ loader
+      const loader = new OBJLoader();
+      
+      // Use the fullModelUrl directly, which should point to the correct location
+      console.log("Attempting to load model from:", fullModelUrl);
+      
+      // Attempt to load the model
+      loader.load(
+        fullModelUrl,
+        // Success callback
+        (object: THREE.Object3D) => {
+          // Remove loading indicator
+          scene.remove(loadingSphere);
+          
+          // Scale and center the model
+          const box = new THREE.Box3().setFromObject(object);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          
+          // Scale model to fit view
+          const maxDimension = Math.max(size.x, size.y, size.z);
+          const scale = 2 / maxDimension;
+          object.scale.set(scale, scale, scale);
+          
+          // Center model
+          object.position.x = -center.x * scale;
+          object.position.y = -center.y * scale;
+          object.position.z = -center.z * scale;
+          
+          // Add model to scene
+          scene.add(object);
+          
+          // Update material for better visibility
+          object.traverse((child: THREE.Object3D) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: 0xf5f5f5,
+                specular: 0x333333,
+                shininess: 30,
+                flatShading: true
+              });
+            }
+          });
+          
+          // Animation function for model rotation
+          const animateModel = () => {
+            object.rotation.y += 0.005;
+            controls.update();
+            renderer.render(scene, camera);
+            animationFrameRef.current = requestAnimationFrame(animateModel);
+          };
+          
+          // Switch to model animation
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
+          animationFrameRef.current = requestAnimationFrame(animateModel);
+          
+          setIsLoading(false);
+          console.log("Model loaded successfully");
+        },
+        // Progress callback
+        (xhr: { loaded: number; total: number }) => {
+          const percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(`${percentComplete}% loaded`);
+        },
+        // Error callback
+        (error: Error) => {
+          console.error("Failed to load model:", error);
+          setLoadingError(`Error loading 3D model: ${error.message}`);
+          
+          // Fallback to simpler model based on name
+          scene.remove(loadingSphere);
+          
+          let geometry: THREE.BufferGeometry;
+          
+          if (name?.toLowerCase().includes('taj mahal') || modelUrl?.toLowerCase().includes('taj')) {
+            // Simple Taj Mahal-like dome
+            geometry = new THREE.CapsuleGeometry(1, 1.5, 8, 16);
+            
+            // Add a base
+            const baseGeometry = new THREE.BoxGeometry(3, 0.5, 3);
+            const baseMaterial = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.y = -1.5;
+            scene.add(base);
+            
+            // Add minarets
+            for (let i = 0; i < 4; i++) {
+              const pillarGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 8);
+              const pillarMaterial = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
+              const pillar = new THREE.Mesh(pillarGeometry, pillarMaterial);
+              
+              const angle = (i * Math.PI / 2);
+              pillar.position.x = 1.8 * Math.cos(angle);
+              pillar.position.z = 1.8 * Math.sin(angle);
+              pillar.position.y = -0.25;
+              scene.add(pillar);
+            }
+            
+          } else if (name?.toLowerCase().includes('qutub minar') || modelUrl?.toLowerCase().includes('qutub')) {
+            // Simple Qutub Minar-like tower
+            geometry = new THREE.CylinderGeometry(0.5, 0.8, 4, 12);
+            
+            // Add base
+            const baseGeometry = new THREE.CylinderGeometry(1.2, 1.2, 0.4, 12);
+            const baseMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.y = -2;
+            scene.add(base);
+            
+            // Add details to the tower
+            for (let i = 0; i < 3; i++) {
+              const ringGeometry = new THREE.TorusGeometry(0.5 + (0.1 * i), 0.1, 8, 24);
+              const ringMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
+              const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+              ring.rotation.x = Math.PI / 2;
+              ring.position.y = -1 + (i * 1.3);
+              scene.add(ring);
+            }
+            
+          } else {
+            // Generic monument
+            geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+          }
+          
+          // Create material and mesh
+          const material = new THREE.MeshPhongMaterial({ 
+            color: 0xf5f5f5,
+            specular: 0x333333,
+            shininess: 30,
+          });
+          
+          const mesh = new THREE.Mesh(geometry, material);
+          scene.add(mesh);
+          
+          // Animation function for fallback model
+          const animateFallback = () => {
+            mesh.rotation.y += 0.005;
+            controls.update();
+            renderer.render(scene, camera);
+            animationFrameRef.current = requestAnimationFrame(animateFallback);
+          };
+          
+          // Switch to fallback animation
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
+          animationFrameRef.current = requestAnimationFrame(animateFallback);
+          
+          setIsLoading(false);
+        }
+      );
+    } else {
+      // No model URL, create a basic shape based on monument name
+      scene.remove(loadingSphere);
+      
+      // Default material
+      const material = new THREE.MeshPhongMaterial({ 
+        color: 0x3366cc,
+        specular: 0x111111,
+        shininess: 30
+      });
+      
+      // Create a torus knot as default
+      const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+      const torusKnot = new THREE.Mesh(geometry, material);
+      scene.add(torusKnot);
+      
+      // Animation function
+      const animateDefault = () => {
+        torusKnot.rotation.y += 0.005;
+        torusKnot.rotation.x += 0.002;
+        controls.update();
+        renderer.render(scene, camera);
+        animationFrameRef.current = requestAnimationFrame(animateDefault);
+      };
+      
+      // Start animation
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      animationFrameRef.current = requestAnimationFrame(animateDefault);
+      
+      setIsLoading(false);
+    }
     
     // Handle window resize
     const handleResize = () => {
