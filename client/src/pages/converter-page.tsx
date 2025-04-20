@@ -96,14 +96,14 @@ export default function ConverterPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold mb-4">Transform Text to 3D Models</h1>
+          <h1 className="text-4xl font-bold mb-4 neon-text-intense">Transform Text to 3D Models</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Enter detailed descriptions of Indian heritage monuments and watch as our AI generates interactive 3D models.
           </p>
         </motion.div>
         
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-card shadow-xl overflow-hidden border">
+          <Card className="glass-panel overflow-hidden neon-border">
             <CardContent className="p-6 md:p-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Input Section */}
@@ -112,7 +112,7 @@ export default function ConverterPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h3 className="font-semibold text-xl text-card-foreground mb-6">Describe Your Monument</h3>
+                  <h3 className="font-semibold text-xl neon-text mb-6">Describe Your Monument</h3>
                   
                   <div className="space-y-6">
                     <div className="space-y-2">
@@ -160,7 +160,7 @@ export default function ConverterPage() {
                     
                     <Button 
                       onClick={handleGenerate} 
-                      className="w-full"
+                      className="w-full glow-button-accent"
                       disabled={isGenerating}
                     >
                       {isGenerating ? (
@@ -224,9 +224,9 @@ export default function ConverterPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-12 p-6 bg-muted/30 rounded-lg"
+            className="mt-12 p-6 glass-panel"
           >
-            <h3 className="font-semibold text-xl mb-4">Tips for Better Results</h3>
+            <h3 className="font-semibold text-xl mb-4 neon-text">Tips for Better Results</h3>
             <ul className="space-y-2 list-disc list-inside text-muted-foreground">
               <li>Be as detailed as possible in your description</li>
               <li>Mention specific architectural features like domes, pillars, or carvings</li>
