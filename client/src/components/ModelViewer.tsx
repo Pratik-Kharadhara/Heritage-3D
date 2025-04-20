@@ -800,7 +800,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   }
   
   return (
-    <div className={`w-full h-full flex flex-col overflow-hidden ${
+    <div className={`w-full h-full flex flex-col overflow-hidden liquid-gradient-border rounded-lg ${
       isFullScreen ? 'fixed inset-0 z-50 bg-background p-4' : ''
     }`}>
       {/* Controls */}
@@ -810,18 +810,18 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
             variant={is3DMode ? "default" : "outline"} 
             size="sm" 
             onClick={() => setIs3DMode(true)}
-            className={is3DMode ? "bg-primary text-primary-foreground" : ""}
+            className={is3DMode ? "liquid-gradient-button text-white" : "liquid-gradient-border"}
           >
-            <Box className="h-4 w-4 mr-2" />
+            <Box className={`h-4 w-4 mr-2 ${is3DMode ? "text-white" : ""}`} />
             3D View
           </Button>
           <Button 
             variant={!is3DMode ? "default" : "outline"} 
             size="sm" 
             onClick={() => setIs3DMode(false)}
-            className={!is3DMode ? "bg-primary text-primary-foreground" : ""}
+            className={!is3DMode ? "liquid-gradient-button text-white" : "liquid-gradient-border"}
           >
-            <ZoomIn className="h-4 w-4 mr-2" />
+            <ZoomIn className={`h-4 w-4 mr-2 ${!is3DMode ? "text-white" : ""}`} />
             Image View
           </Button>
         </div>
@@ -900,9 +900,9 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
                 <Button 
                   variant="outline" 
                   onClick={() => setIs3DMode(true)} 
-                  className="bg-background/80 hover:bg-background/100"
+                  className="liquid-gradient-button text-white hover:scale-105 transition-transform"
                 >
-                  <Box className="h-4 w-4 mr-2" />
+                  <Box className="h-4 w-4 mr-2 text-white" />
                   View in 3D
                 </Button>
               </div>

@@ -14,7 +14,7 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
   return (
     <motion.div 
       className={`
-        animated-border neon-card card-3d rounded-xl overflow-hidden relative group
+        liquid-gradient-border neon-card card-3d rounded-xl overflow-hidden relative group
         ${model.name?.includes('Taj Mahal') ? 'marble-texture' : 'sandstone-texture'}
       `}
       initial={{ opacity: 0, y: 20 }}
@@ -131,18 +131,18 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
               <Button 
                 variant="default" 
                 size="sm" 
-                className="glow-button flex-1 flex items-center justify-center gap-2 mt-2"
+                className="liquid-gradient-button flex-1 flex items-center justify-center gap-2 mt-2"
                 onClick={onClick}
               >
-                <Eye className="h-4 w-4" /> 
-                <span className="font-medium">Quick View</span>
+                <Eye className="h-4 w-4 text-white" /> 
+                <span className="font-medium text-white">Quick View</span>
               </Button>
               
               <Link href={`/models/${model.id}`}>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="flex-1 flex items-center justify-center gap-2 mt-2"
+                  className="liquid-gradient-border flex-1 flex items-center justify-center gap-2 mt-2 hover:scale-105 transition-transform"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -156,11 +156,11 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
             <Button 
               variant="default" 
               size="sm" 
-              className="glow-button w-full flex items-center justify-center gap-2 mt-2"
+              className="liquid-gradient-button w-full flex items-center justify-center gap-2 mt-2"
               onClick={onClick}
             >
-              <Eye className="h-4 w-4" /> 
-              <span className="font-medium">Explore in 3D</span>
+              <Eye className="h-4 w-4 text-white" /> 
+              <span className="font-medium text-white">Explore in 3D</span>
             </Button>
           )}
         </div>
