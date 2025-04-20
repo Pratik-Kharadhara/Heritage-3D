@@ -125,64 +125,108 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
         // Start the animation loop immediately
         animate();
 
-        // Load the actual model
-        const objLoader = new OBJLoader();
-        
-        objLoader.load(
-          modelUrl,
-          (object) => {
-            // Success callback
-            console.log("Model loaded successfully:", object);
+        // Fetch the model file to make sure it exists
+        fetch(modelUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Failed to fetch model: ${response.status} ${response.statusText}`);
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            // Create a URL for the blob
+            const objectURL = URL.createObjectURL(blob);
             
-            // Remove the temporary placeholder
+            // Load the model using OBJLoader
+            const objLoader = new OBJLoader();
+            
+            objLoader.load(
+              objectURL,
+              (object) => {
+                // Success callback
+                console.log("Model loaded successfully:", object);
+                
+                // Clean up the temporary URL
+                URL.revokeObjectURL(objectURL);
+                
+                // Remove the temporary placeholder
+                scene.remove(tempSphere);
+                
+                // Scale and center the loaded object properly
+                object.scale.set(0.05, 0.05, 0.05); // Smaller scale for large models
+                
+                // Calculate bounding box
+                const bbox = new THREE.Box3().setFromObject(object);
+                const center = bbox.getCenter(new THREE.Vector3());
+                const size = bbox.getSize(new THREE.Vector3());
+                
+                // Center the object
+                object.position.set(-center.x, -center.y, -center.z);
+                
+                // Adjust camera position based on object size
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const fov = camera.fov * (Math.PI / 180);
+                let cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
+                cameraZ *= 2.0; // Zoom out a bit more
+                camera.position.z = cameraZ;
+                
+                // Set camera limits
+                const minZ = maxDim * 0.5;
+                const maxZ = cameraZ * 5;
+                controlsRef.current!.minDistance = minZ;
+                controlsRef.current!.maxDistance = maxZ;
+                
+                // Update camera
+                camera.near = 0.1;
+                camera.far = cameraZ * 10;
+                camera.updateProjectionMatrix();
+                
+                // Add the object to the scene
+                scene.add(object);
+                objectRef.current = object;
+                
+                // Add a simple rotation animation
+                const rotateModel = () => {
+                  if (objectRef.current) {
+                    objectRef.current.rotation.y += 0.002;
+                  }
+                  requestAnimationFrame(rotateModel);
+                };
+                rotateModel();
+                
+                setIsLoading(false);
+              },
+              (xhr) => {
+                // Progress callback
+                const percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(`${percentComplete.toFixed(2)}% loaded`);
+              },
+              (error) => {
+                // Error callback
+                console.error('Error loading model:', error);
+                setLoadingError(`Failed to load model: ${error.message}`);
+                setIsLoading(false);
+                // Clean up the temporary URL
+                URL.revokeObjectURL(objectURL);
+              }
+            );
+          })
+          .catch(error => {
+            console.error("Error fetching model:", error);
+            setLoadingError(`Error fetching model: ${error.message}`);
+            setIsLoading(false);
+            
+            // Show a fallback if loading fails
             scene.remove(tempSphere);
-            
-            // Scale and center the loaded object properly
-            object.scale.set(1, 1, 1); // Adjust scale as needed
-            
-            // Calculate bounding box
-            const bbox = new THREE.Box3().setFromObject(object);
-            const center = bbox.getCenter(new THREE.Vector3());
-            const size = bbox.getSize(new THREE.Vector3());
-            
-            // Center the object
-            object.position.sub(center);
-            
-            // Adjust camera position based on object size
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            let cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-            cameraZ *= 1.5; // Zoom out a bit more
-            camera.position.z = cameraZ;
-            
-            // Set camera limits
-            const minZ = maxDim * 0.8;
-            const maxZ = cameraZ * 4;
-            controlsRef.current!.minDistance = minZ;
-            controlsRef.current!.maxDistance = maxZ;
-            
-            // Update camera
-            camera.near = 0.1;
-            camera.far = cameraZ * 10;
-            camera.updateProjectionMatrix();
-            
-            // Add the object to the scene
-            scene.add(object);
-            objectRef.current = object;
-            
-            setIsLoading(false);
-          },
-          (xhr) => {
-            // Progress callback
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-          },
-          (error) => {
-            // Error callback
-            console.error('Error loading model:', error);
-            setLoadingError(`Failed to load model: ${error.message}`);
-            setIsLoading(false);
-          }
-        );
+            const geometry = new THREE.BoxGeometry(2, 2, 2);
+            const material = new THREE.MeshStandardMaterial({ 
+              color: 0xEE3333,
+              wireframe: true
+            });
+            const errorCube = new THREE.Mesh(geometry, material);
+            scene.add(errorCube);
+            objectRef.current = errorCube;
+          });
       } catch (error) {
         console.error("Error in model loading process:", error);
         setLoadingError(`Error initializing model loader: ${error}`);
