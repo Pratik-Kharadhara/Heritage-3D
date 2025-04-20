@@ -140,7 +140,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Function to create enhanced Taj Mahal model with realistic marble texture
   const createTajMahalModel = (group: THREE.Group) => {
     // Create marble material with subtle veins
-    const marbleTexture = new THREE.TextureLoader().load('/attached_assets/photo-1564507592333-c60657eea523.jpeg');
+    const marbleTexture = new THREE.TextureLoader().load('/taj-mahal.jpeg');
     marbleTexture.wrapS = THREE.RepeatWrapping;
     marbleTexture.wrapT = THREE.RepeatWrapping;
     marbleTexture.repeat.set(0.1, 0.1);
@@ -392,7 +392,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Function to create enhanced Qutub Minar model with realistic red sandstone texture
   const createQutubMinarModel = (group: THREE.Group) => {
     // Create sandstone texture
-    const sandstoneTexture = new THREE.TextureLoader().load('/attached_assets/qutub1_042717100950.jpg');
+    const sandstoneTexture = new THREE.TextureLoader().load('/qutub-minar.jpg');
     sandstoneTexture.wrapS = THREE.RepeatWrapping;
     sandstoneTexture.wrapT = THREE.RepeatWrapping;
     sandstoneTexture.repeat.set(0.2, 0.2);
@@ -759,11 +759,11 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Get monument image for fallback
   const getMonumentImage = () => {
     if (name?.toLowerCase().includes('taj mahal') || modelUrl?.toLowerCase().includes('taj')) {
-      return "/attached_assets/photo-1564507592333-c60657eea523.jpeg";
+      return "/taj-mahal.jpeg";
     } else if (name?.toLowerCase().includes('qutub minar') || modelUrl?.toLowerCase().includes('qutub')) {
-      return "/attached_assets/qutub1_042717100950.jpg";
+      return "/qutub-minar.jpg";
     } else {
-      return "/attached_assets/qutub1_042717100950.jpg"; // Default to Qutub Minar as fallback
+      return "/qutub-minar.jpg"; // Default to Qutub Minar as fallback
     }
   };
   

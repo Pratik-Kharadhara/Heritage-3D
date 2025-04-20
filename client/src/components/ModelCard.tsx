@@ -32,8 +32,8 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
         <motion.img 
           src={
             model.name?.includes("Taj Mahal") 
-              ? "/attached_assets/photo-1564507592333-c60657eea523.jpeg"
-              : "/attached_assets/qutub1_042717100950.jpg"
+              ? "/taj-mahal.jpeg"
+              : "/qutub-minar.jpg"
           } 
           alt={model.name || "3D Model"} 
           className="w-full h-full object-cover transition-transform duration-700" 
