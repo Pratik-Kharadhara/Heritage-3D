@@ -5,6 +5,8 @@ import { setupAuth } from "./auth";
 import { models as modelsSchema, tours as toursSchema } from "@shared/schema";
 import { z } from "zod";
 import { getHeritageDetails, getHeritageSites } from "./gemini";
+import path from 'path';
+import fs from 'fs';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes (/api/register, /api/login, /api/logout, /api/user)
@@ -93,6 +95,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const tour = await storage.createTour(req.body);
       res.status(201).json(tour);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Special route to serve 3D model files
+  app.get("/api/modelfiles/:filename", (req, res, next) => {
+    try {
+      const filename = req.params.filename;
+      const filePath = path.join(process.cwd(), 'public', 'models', filename);
+      
+      console.log(`Attempting to serve 3D model file: ${filePath}`);
+      
+      if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+      } else {
+        console.error(`File not found: ${filePath}`);
+        res.status(404).json({ message: "Model file not found" });
+      }
     } catch (error) {
       next(error);
     }

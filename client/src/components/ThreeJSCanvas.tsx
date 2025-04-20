@@ -139,10 +139,15 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
           // Load the model
           const loader = new OBJLoader();
           
-          console.log('Loading 3D model from:', modelUrl);
+          // Adjust path for model loading - try with and without leading slash
+          const adjustedModelUrl = modelUrl.startsWith('/') 
+            ? modelUrl.substring(1) // Remove leading slash if present
+            : modelUrl;
+          
+          console.log('Loading 3D model from:', adjustedModelUrl);
           
           loader.load(
-            modelUrl,
+            adjustedModelUrl,
             // Success callback
             (object: THREE.Object3D) => {
               if (!isMounted) return;
@@ -202,7 +207,8 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
               if (!isMounted) return;
               
               console.error('Error loading model:', error);
-              setLoadingError('Failed to load the 3D model. Please try again later.');
+              console.error('Model URL that failed:', modelUrl);
+              setLoadingError(`Failed to load the 3D model: ${modelUrl}. Please try again later.`);
               setIsLoading(false);
               
               // Remove loading sphere
