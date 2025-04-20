@@ -141,9 +141,11 @@ export default function HomePage() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                 >
                   <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl leading-tight mb-6">
-                    Explore India's Heritage in <span className="neon-text-intense">3D</span>
+                    <span className="liquid-gradient-border inline-block px-2 py-1">
+                      Explore <span className="liquid-gradient font-extrabold">India's Heritage</span> in <span className="neon-text-intense">3D</span>
+                    </span>
                   </h1>
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  <p className="text-lg text-muted-foreground leading-relaxed mb-8 liquid-gradient-glow p-4 rounded-lg backdrop-blur-sm">
                     Transform text descriptions into detailed 3D models of India's cultural landmarks and monuments. Experience the rich heritage through our interactive virtual tours.
                   </p>
                 </motion.div>
@@ -156,18 +158,18 @@ export default function HomePage() {
                 >
                   <Button 
                     size="lg" 
-                    className="glow-button group relative overflow-hidden"
+                    className="liquid-gradient-button group relative overflow-hidden"
                     asChild
                   >
                     <Link href="/converter">
-                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
-                      <span className="relative z-10">Create 3D Model</span>
+                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce text-white" /> 
+                      <span className="relative z-10 text-white font-medium">Create 3D Model</span>
                     </Link>
                   </Button>
                   <Button 
                     variant="outline" 
                     size="lg"
-                    className="neon-border group"
+                    className="liquid-gradient-border group hover:scale-105 transition-transform"
                     asChild
                   >
                     <Link href="/models">
@@ -338,11 +340,11 @@ export default function HomePage() {
             <Button 
               variant="outline" 
               size="lg" 
-              className="glow-button relative group overflow-hidden px-10 py-6"
+              className="liquid-gradient-button group relative overflow-hidden px-10 py-6"
               asChild
             >
               <Link href="/models">
-                <span className="relative z-10 flex items-center font-medium">
+                <span className="relative z-10 flex items-center font-medium text-white">
                   View All 3D Models
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -422,12 +424,12 @@ export default function HomePage() {
                 >
                   <Button 
                     size="lg" 
-                    className="glow-button-accent group relative overflow-hidden"
+                    className="liquid-gradient-button group relative overflow-hidden"
                     asChild
                   >
                     <Link href="/converter">
-                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
-                      <span className="relative z-10">Try Text to 3D Converter</span>
+                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce text-white" /> 
+                      <span className="relative z-10 text-white">Try Text to 3D Converter</span>
                     </Link>
                   </Button>
                 </motion.div>
@@ -623,9 +625,9 @@ export default function HomePage() {
             <Button 
               variant="outline" 
               size="lg" 
-              className="glow-button relative group overflow-hidden px-10 py-6"
+              className="liquid-gradient-button relative group overflow-hidden px-10 py-6"
             >
-              <span className="relative z-10 flex items-center font-medium">
+              <span className="relative z-10 flex items-center font-medium text-white">
                 Explore All Virtual Tours
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

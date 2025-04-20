@@ -80,6 +80,122 @@
 }
 
 @layer components {
+  /* Liquid Gradient Effects */
+  .liquid-gradient {
+    background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #22c55e);
+    background-size: 400% 400%;
+    animation: liquid-gradient-shift 15s ease infinite;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline-block;
+  }
+  
+  .liquid-gradient-background {
+    background: linear-gradient(-45deg, #1e40af, #4c1d95, #0e7490, #166534);
+    background-size: 400% 400%;
+    animation: liquid-gradient-shift 15s ease infinite;
+  }
+  
+  .liquid-gradient-border {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .liquid-gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #22c55e);
+    background-size: 400% 400%;
+    animation: liquid-gradient-shift 15s ease infinite;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  .liquid-gradient-glow {
+    box-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.5),
+      0 0 20px rgba(139, 92, 246, 0.3),
+      0 0 30px rgba(6, 182, 212, 0.2),
+      0 0 40px rgba(34, 197, 94, 0.1);
+    animation: liquid-gradient-glow 15s ease infinite;
+  }
+  
+  .liquid-gradient-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+  }
+  
+  .liquid-gradient-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #22c55e);
+    background-size: 400% 400%;
+    animation: liquid-gradient-shift 15s ease infinite;
+    z-index: -1;
+    transition: all 0.5s ease;
+  }
+  
+  .liquid-gradient-button:hover::before {
+    filter: brightness(1.2) saturate(1.2);
+  }
+  
+  @keyframes liquid-gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  @keyframes liquid-gradient-glow {
+    0% {
+      box-shadow: 
+        0 0 10px rgba(59, 130, 246, 0.5),
+        0 0 20px rgba(59, 130, 246, 0.3),
+        0 0 30px rgba(59, 130, 246, 0.2);
+    }
+    25% {
+      box-shadow: 
+        0 0 10px rgba(139, 92, 246, 0.5),
+        0 0 20px rgba(139, 92, 246, 0.3),
+        0 0 30px rgba(139, 92, 246, 0.2);
+    }
+    50% {
+      box-shadow: 
+        0 0 10px rgba(6, 182, 212, 0.5),
+        0 0 20px rgba(6, 182, 212, 0.3),
+        0 0 30px rgba(6, 182, 212, 0.2);
+    }
+    75% {
+      box-shadow: 
+        0 0 10px rgba(34, 197, 94, 0.5),
+        0 0 20px rgba(34, 197, 94, 0.3),
+        0 0 30px rgba(34, 197, 94, 0.2);
+    }
+    100% {
+      box-shadow: 
+        0 0 10px rgba(59, 130, 246, 0.5),
+        0 0 20px rgba(59, 130, 246, 0.3),
+        0 0 30px rgba(59, 130, 246, 0.2);
+    }
+  }
+  
   /* Grid pattern for background */
   .bg-grid-pattern {
     background-size: 50px 50px;
