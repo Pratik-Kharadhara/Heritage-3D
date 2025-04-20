@@ -27,7 +27,7 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
     >
       <div className="relative h-56 overflow-hidden">
         <motion.img 
-          src={model.imageUrl || "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80"} 
+          src={model.imageUrl || "/attached_assets/qutub1_042717100950.jpg"} 
           alt={model.name || "3D Model"} 
           className="w-full h-full object-cover transition-transform duration-700" 
           whileHover={{ scale: 1.1 }}
@@ -70,8 +70,8 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
         </p>
         
         <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center gap-4 justify-between">
               <span className="text-xs text-muted-foreground flex items-center">
                 <Landmark className="h-3 w-3 mr-1 text-primary" />
                 {model.location || "Unknown Location"}
@@ -82,6 +82,28 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onClick }) => {
                 {model.year || "Unknown Age"}
               </span>
             </div>
+            
+            {model.material && (
+              <div className="flex items-center">
+                <Badge variant="outline" className="text-xs bg-background/20 backdrop-blur-sm border-primary/20">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                  </svg>
+                  {model.material}
+                </Badge>
+                {model.style && (
+                  <Badge variant="outline" className="text-xs ml-2 bg-background/20 backdrop-blur-sm border-secondary/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    {model.style}
+                  </Badge>
+                )}
+              </div>
+            )}
           </div>
           
           <Button 

@@ -27,7 +27,7 @@ const Footer = () => {
     },
     { 
       icon: Instagram, 
-      href: "https://www.instagram.com/iampratik_05/", 
+      href: "https://www.instagram.com/ritampatra846/", 
       label: "Instagram",
       color: "hover:text-[#E1306C] hover:shadow-[0_0_8px_#E1306C]"
     }

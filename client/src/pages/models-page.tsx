@@ -20,22 +20,28 @@ const models = [
   {
     id: 1,
     name: "Taj Mahal",
-    description: "Built by Emperor Shah Jahan in memory of his wife Mumtaz Mahal, this ivory-white marble mausoleum is one of the world's most iconic monuments.",
+    description: "Built by Emperor Shah Jahan in memory of his wife Mumtaz Mahal, this ivory-white marble mausoleum is one of the world's most iconic monuments and a UNESCO World Heritage Site.",
     location: "Agra, Uttar Pradesh",
     userId: 1,
-    modelUrl: "/models/taj-mahal.glb",
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-    createdAt: "2023-01-01"
+    modelUrl: "/models/Tajmahal_model_2.obj",
+    imageUrl: "/attached_assets/photo-1564507592333-c60657eea523.jpeg",
+    createdAt: "2023-01-01",
+    material: "White Marble",
+    year: "1632-1653",
+    style: "Mughal Architecture"
   },
   {
     id: 2,
     name: "Qutub Minar",
-    description: "A soaring 73-meter minaret built in the early 13th century, featuring intricate carvings and inscriptions from the Delhi Sultanate period.",
+    description: "A soaring 73-meter minaret built in the early 13th century, featuring intricate carvings and inscriptions from the Delhi Sultanate period, known for its unique red sandstone texture.",
     location: "Delhi, India",
     userId: 1,
-    modelUrl: "/models/qutub-minar.glb",
-    imageUrl: "https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80",
-    createdAt: "2023-01-02"
+    modelUrl: "/models/Qutub_Minar_3d_Model.obj",
+    imageUrl: "/attached_assets/qutub1_042717100950.jpg",
+    createdAt: "2023-01-02",
+    material: "Red Sandstone & Marble",
+    year: "1192-1220",
+    style: "Indo-Islamic Architecture"
   },
   {
     id: 3,
