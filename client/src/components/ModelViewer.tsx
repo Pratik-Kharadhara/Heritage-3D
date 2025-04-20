@@ -137,51 +137,143 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
     }
   }, [is3DMode, modelUrl, name]);
   
-  // Function to create Taj Mahal model
+  // Function to create enhanced Taj Mahal model with realistic marble texture
   const createTajMahalModel = (group: THREE.Group) => {
-    // Main dome
-    const domeGeometry = new THREE.SphereGeometry(1, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
-    const domeMaterial = new THREE.MeshPhongMaterial({ 
-      color: 0xffffff,
-      specular: 0x555555,
-      shininess: 50
+    // Create marble material with subtle veins
+    const marbleTexture = new THREE.TextureLoader().load('/attached_assets/photo-1564507592333-c60657eea523.jpeg');
+    marbleTexture.wrapS = THREE.RepeatWrapping;
+    marbleTexture.wrapT = THREE.RepeatWrapping;
+    marbleTexture.repeat.set(0.1, 0.1);
+    
+    // Enhanced marble material
+    const marbleMaterial = new THREE.MeshPhysicalMaterial({ 
+      color: 0xfffafa,
+      roughness: 0.1,
+      metalness: 0.0,
+      reflectivity: 0.5,
+      clearcoat: 0.3,
+      clearcoatRoughness: 0.2,
+      envMapIntensity: 1.0
     });
-    const dome = new THREE.Mesh(domeGeometry, domeMaterial);
+    
+    // Main dome with more details
+    const domeGeometry = new THREE.SphereGeometry(1, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
+    const dome = new THREE.Mesh(domeGeometry, marbleMaterial);
     dome.position.y = 0.5;
+    dome.castShadow = true;
+    dome.receiveShadow = true;
     group.add(dome);
     
+    // Decorative accent at the dome's base
+    const domeRingGeometry = new THREE.TorusGeometry(1.02, 0.05, 16, 64);
+    const goldMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xffd700,
+      roughness: 0.3,
+      metalness: 0.8
+    });
+    const domeRing = new THREE.Mesh(domeRingGeometry, goldMaterial);
+    domeRing.position.y = 0.02;
+    domeRing.rotation.x = Math.PI / 2;
+    group.add(domeRing);
+    
     // Dome tip
-    const tipGeometry = new THREE.ConeGeometry(0.1, 0.5, 16);
-    const tipMaterial = new THREE.MeshPhongMaterial({ color: 0xffd700 }); // Gold tip
-    const tip = new THREE.Mesh(tipGeometry, tipMaterial);
+    const tipGeometry = new THREE.ConeGeometry(0.15, 0.7, 32);
+    const tip = new THREE.Mesh(tipGeometry, goldMaterial);
     tip.position.y = 1.5;
+    tip.castShadow = true;
     group.add(tip);
     
+    // Main platform - more realistic with beveled edges
+    const createBeveledCube = (width: number, height: number, depth: number, bevel: number = 0.1) => {
+      const shape = new THREE.Shape();
+      shape.moveTo(-width/2 + bevel, -depth/2);
+      shape.lineTo(width/2 - bevel, -depth/2);
+      shape.quadraticCurveTo(width/2, -depth/2, width/2, -depth/2 + bevel);
+      shape.lineTo(width/2, depth/2 - bevel);
+      shape.quadraticCurveTo(width/2, depth/2, width/2 - bevel, depth/2);
+      shape.lineTo(-width/2 + bevel, depth/2);
+      shape.quadraticCurveTo(-width/2, depth/2, -width/2, depth/2 - bevel);
+      shape.lineTo(-width/2, -depth/2 + bevel);
+      shape.quadraticCurveTo(-width/2, -depth/2, -width/2 + bevel, -depth/2);
+      
+      const extrudeSettings = {
+        steps: 1,
+        depth: height,
+        bevelEnabled: true,
+        bevelThickness: bevel,
+        bevelSize: bevel,
+        bevelOffset: 0,
+        bevelSegments: 5
+      };
+      
+      return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    };
+    
     // Main platform
-    const platformGeometry = new THREE.BoxGeometry(4, 0.4, 4);
-    const platformMaterial = new THREE.MeshPhongMaterial({ color: 0xf0f0f0 });
+    const platformGeometry = createBeveledCube(4, 0.5, 4);
+    const platformMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0xf5f5f5,
+      specular: 0x222222,
+      shininess: 30
+    });
     const platform = new THREE.Mesh(platformGeometry, platformMaterial);
     platform.position.y = -0.7;
+    platform.rotation.x = Math.PI / 2;
+    platform.castShadow = true;
+    platform.receiveShadow = true;
     group.add(platform);
     
     // Second platform
-    const platform2Geometry = new THREE.BoxGeometry(5, 0.3, 5);
+    const platform2Geometry = createBeveledCube(5, 0.4, 5);
     const platform2 = new THREE.Mesh(platform2Geometry, platformMaterial);
     platform2.position.y = -1.1;
+    platform2.rotation.x = Math.PI / 2;
+    platform2.castShadow = true;
+    platform2.receiveShadow = true;
     group.add(platform2);
     
-    // Base building
+    // Base building with decorated facade
     const buildingGeometry = new THREE.BoxGeometry(3, 1, 3);
-    const buildingMaterial = new THREE.MeshPhongMaterial({ 
-      color: 0xfffafa,
-      specular: 0x222222,
-      shininess: 10
-    });
-    const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
+    const building = new THREE.Mesh(buildingGeometry, marbleMaterial);
     building.position.y = 0;
+    building.castShadow = true;
+    building.receiveShadow = true;
     group.add(building);
     
-    // Four minarets
+    // Add entrance arch
+    const archWidth = 0.8;
+    const archHeight = 0.6;
+    const archDepth = 0.2;
+    
+    const archShape = new THREE.Shape();
+    archShape.moveTo(-archWidth/2, 0);
+    archShape.lineTo(-archWidth/2, archHeight/2);
+    archShape.quadraticCurveTo(0, archHeight, archWidth/2, archHeight/2);
+    archShape.lineTo(archWidth/2, 0);
+    
+    const archExtrudeSettings = {
+      steps: 2,
+      depth: archDepth,
+      bevelEnabled: true,
+      bevelThickness: 0.05,
+      bevelSize: 0.05,
+      bevelOffset: 0,
+      bevelSegments: 4
+    };
+    
+    const archGeometry = new THREE.ExtrudeGeometry(archShape, archExtrudeSettings);
+    const archMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0xeeeae6,
+      specular: 0x222222,
+      shininess: 60
+    });
+    
+    const arch = new THREE.Mesh(archGeometry, archMaterial);
+    arch.position.set(0, -0.5, 1.5);
+    arch.castShadow = true;
+    group.add(arch);
+    
+    // Four minarets with enhanced design
     const minaretPositions = [
       { x: 2.2, z: 2.2 },
       { x: 2.2, z: -2.2 },
@@ -190,91 +282,464 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
     ];
     
     minaretPositions.forEach(pos => {
-      // Main tower
-      const minaretGeometry = new THREE.CylinderGeometry(0.15, 0.2, 3, 16);
-      const minaretMaterial = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
-      const minaret = new THREE.Mesh(minaretGeometry, minaretMaterial);
-      minaret.position.set(pos.x, 0.4, pos.z);
+      // Detailed minaret
+      const createMinaret = (x: number, z: number) => {
+        const minaretGroup = new THREE.Group();
+        
+        // Base
+        const baseGeometry = new THREE.CylinderGeometry(0.25, 0.3, 0.4, 16);
+        const base = new THREE.Mesh(baseGeometry, platformMaterial);
+        base.position.y = -1.3;
+        base.castShadow = true;
+        minaretGroup.add(base);
+        
+        // Main tower with segmentation
+        const segmentHeight = 0.4;
+        const segments = 7;
+        
+        for (let i = 0; i < segments; i++) {
+          const isNarrow = i % 2 === 1;
+          const radius = isNarrow ? 0.15 : 0.18;
+          const segGeometry = new THREE.CylinderGeometry(
+            radius * 0.9,
+            radius,
+            segmentHeight,
+            16
+          );
+          const segMaterial = isNarrow ? 
+            new THREE.MeshPhongMaterial({ color: 0xeeeae6 }) : 
+            marbleMaterial;
+          
+          const segment = new THREE.Mesh(segGeometry, segMaterial);
+          segment.position.y = -1 + (i * segmentHeight);
+          segment.castShadow = true;
+          minaretGroup.add(segment);
+          
+          // Add decorative ring between segments
+          if (i < segments - 1) {
+            const ringGeometry = new THREE.TorusGeometry(radius, 0.02, 8, 32);
+            const ring = new THREE.Mesh(ringGeometry, goldMaterial);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = -1 + (i * segmentHeight) + segmentHeight/2;
+            minaretGroup.add(ring);
+          }
+        }
+        
+        // Top dome
+        const topGeometry = new THREE.SphereGeometry(0.2, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+        const top = new THREE.Mesh(topGeometry, marbleMaterial);
+        top.position.y = -1 + (segments * segmentHeight) + 0.1;
+        top.castShadow = true;
+        minaretGroup.add(top);
+        
+        // Finial
+        const finialGeometry = new THREE.ConeGeometry(0.05, 0.2, 16);
+        const finial = new THREE.Mesh(finialGeometry, goldMaterial);
+        finial.position.y = -1 + (segments * segmentHeight) + 0.3;
+        finial.castShadow = true;
+        minaretGroup.add(finial);
+        
+        minaretGroup.position.set(x, 0, z);
+        return minaretGroup;
+      };
+      
+      const minaret = createMinaret(pos.x, pos.z);
       group.add(minaret);
-      
-      // Top dome
-      const topGeometry = new THREE.SphereGeometry(0.2, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-      const top = new THREE.Mesh(topGeometry, minaretMaterial);
-      top.position.set(pos.x, 2, pos.z);
-      group.add(top);
-      
-      // Small platform under minaret
-      const minaretBaseGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 16);
-      const minaretBase = new THREE.Mesh(minaretBaseGeometry, platformMaterial);
-      minaretBase.position.set(pos.x, -1, pos.z);
-      group.add(minaretBase);
     });
+    
+    // Add garden reflection pool - typical of Taj Mahal
+    const poolGeometry = new THREE.BoxGeometry(8, 0.1, 2);
+    const poolMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0x3a85ff,
+      transparent: true,
+      opacity: 0.7,
+      specular: 0xffffff,
+      shininess: 100
+    });
+    const pool = new THREE.Mesh(poolGeometry, poolMaterial);
+    pool.position.set(0, -1.5, -3);
+    pool.receiveShadow = true;
+    group.add(pool);
+    
+    // Add decorative garden outlines
+    const createGardenBorder = (width: number, depth: number) => {
+      const borderGeometry = new THREE.BoxGeometry(width, 0.1, 0.2);
+      const borderMaterial = new THREE.MeshPhongMaterial({ color: 0xc19a6b });
+      const border = new THREE.Mesh(borderGeometry, borderMaterial);
+      border.position.y = -1.45;
+      border.position.z = -3 - depth/2;
+      group.add(border);
+      
+      const border2 = border.clone();
+      border2.position.z = -3 + depth/2;
+      group.add(border2);
+      
+      const sideGeometry = new THREE.BoxGeometry(0.2, 0.1, depth);
+      const sideBorder = new THREE.Mesh(sideGeometry, borderMaterial);
+      sideBorder.position.y = -1.45;
+      sideBorder.position.x = width/2;
+      sideBorder.position.z = -3;
+      group.add(sideBorder);
+      
+      const sideBorder2 = sideBorder.clone();
+      sideBorder2.position.x = -width/2;
+      group.add(sideBorder2);
+    };
+    
+    createGardenBorder(8.2, 2.2);
   };
   
-  // Function to create Qutub Minar model
+  // Function to create enhanced Qutub Minar model with realistic red sandstone texture
   const createQutubMinarModel = (group: THREE.Group) => {
-    // Main tower - tapered
+    // Create sandstone texture
+    const sandstoneTexture = new THREE.TextureLoader().load('/attached_assets/qutub1_042717100950.jpg');
+    sandstoneTexture.wrapS = THREE.RepeatWrapping;
+    sandstoneTexture.wrapT = THREE.RepeatWrapping;
+    sandstoneTexture.repeat.set(0.2, 0.2);
+    
+    // Enhanced sandstone material with texture mapping
+    const sandstoneMaterial = new THREE.MeshStandardMaterial({ 
+      map: sandstoneTexture,
+      color: 0xd2b48c,
+      roughness: 0.7,
+      metalness: 0.0
+    });
+    
+    // Secondary material for contrast sections
+    const marbleMaterial = new THREE.MeshPhysicalMaterial({ 
+      color: 0xf0e6d2,
+      roughness: 0.3,
+      metalness: 0.0,
+      reflectivity: 0.2
+    });
+    
+    // Metallic material for decorative elements
+    const metalMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xb8860b, // Dark gold
+      roughness: 0.3,
+      metalness: 0.8
+    });
+    
+    // Main tower - detailed tapered structure with carvings
     const sections = 5;
-    const heightPerSection = 0.8;
+    const heightPerSection = 0.9;
     const totalHeight = sections * heightPerSection;
-    const baseRadius = 0.8;
+    const baseRadius = 0.9;
     const topRadius = 0.35;
     
-    // Create the tower in sections
+    // Create detailed tower sections
     for (let i = 0; i < sections; i++) {
       const sectionBaseRadius = baseRadius - ((baseRadius - topRadius) * (i / sections));
       const sectionTopRadius = baseRadius - ((baseRadius - topRadius) * ((i + 1) / sections));
       
+      // Create main section cylinder
       const sectionGeometry = new THREE.CylinderGeometry(
         sectionTopRadius, 
         sectionBaseRadius, 
         heightPerSection, 
-        32
+        32, 
+        8, // More height segments for detail
+        true // Open-ended for additional detailing
       );
       
-      const color = i % 2 === 0 ? 0xd2b48c : 0xc19a6b; // Alternating colors
-      const sectionMaterial = new THREE.MeshPhongMaterial({ 
-        color: color,
-        specular: 0x222222,
-        shininess: 20
-      });
+      // Alternate materials for cultural authenticity
+      const material = i % 2 === 0 ? sandstoneMaterial.clone() : marbleMaterial.clone();
       
-      const section = new THREE.Mesh(sectionGeometry, sectionMaterial);
+      // Add color variation based on section
+      if (i % 2 === 0) {
+        material.color.setHex(0xd2b48c); // Sandstone tan
+      } else {
+        material.color.setHex(0xc19a6b); // Darker sandstone
+      }
+      
+      const section = new THREE.Mesh(sectionGeometry, material);
       const yPos = (i * heightPerSection) - (totalHeight / 2) + heightPerSection/2;
       section.position.y = yPos;
+      section.castShadow = true;
+      section.receiveShadow = true;
       group.add(section);
       
-      // Add decorative ring between sections
+      // Add decorative patterns to each section
+      const addDecorations = (sectionIndex: number, radius: number, y: number) => {
+        // Number of decorative elements based on section size
+        const numDecorations = Math.floor(16 - (sectionIndex * 2));
+        
+        // Add intricate carvings typical of Indo-Islamic architecture
+        for (let j = 0; j < numDecorations; j++) {
+          const angle = (j / numDecorations) * Math.PI * 2;
+          const decorSize = 0.1 - (sectionIndex * 0.01);
+          
+          // Carving shape - stylized arabesque pattern
+          const decorShape = new THREE.Shape();
+          decorShape.moveTo(0, 0);
+          decorShape.lineTo(decorSize, 0);
+          decorShape.lineTo(decorSize, decorSize * 3);
+          decorShape.lineTo(decorSize/2, decorSize * 3.5);
+          decorShape.lineTo(0, decorSize * 3);
+          decorShape.lineTo(0, 0);
+          
+          const extrudeSettings = {
+            steps: 1,
+            depth: 0.05,
+            bevelEnabled: true,
+            bevelThickness: 0.01,
+            bevelSize: 0.01,
+            bevelSegments: 2
+          };
+          
+          const decorGeometry = new THREE.ExtrudeGeometry(decorShape, extrudeSettings);
+          const decorMaterial = marbleMaterial.clone();
+          decorMaterial.color.setHex(0xe8dcb5); // Lighter for contrast
+          
+          const decoration = new THREE.Mesh(decorGeometry, decorMaterial);
+          
+          // Position and rotate decoration to align with the cylinder wall
+          decoration.position.set(
+            Math.sin(angle) * (radius + 0.01),
+            y,
+            Math.cos(angle) * (radius + 0.01)
+          );
+          decoration.rotation.y = angle + Math.PI;
+          decoration.scale.set(0.7, 0.7, 0.7);
+          
+          decoration.castShadow = true;
+          group.add(decoration);
+        }
+      };
+      
+      // Add decorative elements to alternating sections
+      if (i % 2 === 0) {
+        addDecorations(i, sectionBaseRadius, yPos - heightPerSection/4);
+      }
+      
+      // Add decorative ring between sections - ornate balconies
       if (i < sections - 1) {
-        const ringGeometry = new THREE.TorusGeometry(sectionTopRadius + 0.05, 0.05, 8, 32);
-        const ringMaterial = new THREE.MeshPhongMaterial({ color: 0xb8860b }); // Dark gold
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        // Create main ring
+        const ringGeometry = new THREE.TorusGeometry(sectionTopRadius + 0.05, 0.07, 16, 48);
+        const ring = new THREE.Mesh(ringGeometry, metalMaterial);
         ring.rotation.x = Math.PI / 2;
         ring.position.y = yPos + heightPerSection/2;
+        ring.castShadow = true;
         group.add(ring);
+        
+        // Add balcony floor
+        const balconyGeometry = new THREE.CylinderGeometry(
+          sectionTopRadius + 0.15, 
+          sectionTopRadius + 0.15, 
+          0.05, 
+          32
+        );
+        const balcony = new THREE.Mesh(balconyGeometry, sandstoneMaterial.clone());
+        balcony.position.y = yPos + heightPerSection/2 - 0.05;
+        balcony.castShadow = true;
+        group.add(balcony);
+        
+        // Add decorative railings
+        const railingCount = 24;
+        for (let r = 0; r < railingCount; r++) {
+          const angle = (r / railingCount) * Math.PI * 2;
+          const railGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.15, 8);
+          const rail = new THREE.Mesh(railGeometry, marbleMaterial.clone());
+          const railRadius = sectionTopRadius + 0.14;
+          
+          rail.position.set(
+            Math.sin(angle) * railRadius,
+            yPos + heightPerSection/2 + 0.05,
+            Math.cos(angle) * railRadius
+          );
+          
+          rail.castShadow = true;
+          group.add(rail);
+        }
       }
     }
     
-    // Top finial/decoration
-    const finialGeometry = new THREE.ConeGeometry(0.15, 0.5, 16);
-    const finialMaterial = new THREE.MeshPhongMaterial({ color: 0xb8860b });
-    const finial = new THREE.Mesh(finialGeometry, finialMaterial);
-    finial.position.y = (totalHeight / 2) + 0.25;
-    group.add(finial);
+    // Enhanced top finial/decoration
+    const finialGroup = new THREE.Group();
     
-    // Base of the monument
-    const baseGeometry = new THREE.CylinderGeometry(1.2, 1.2, 0.5, 32);
-    const baseMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
-    const base = new THREE.Mesh(baseGeometry, baseMaterial);
-    base.position.y = -(totalHeight / 2) - 0.25;
-    group.add(base);
+    // Base of the finial
+    const finialBaseGeometry = new THREE.CylinderGeometry(0.2, 0.3, 0.1, 16);
+    const finialBase = new THREE.Mesh(finialBaseGeometry, metalMaterial);
+    finialBase.position.y = 0;
+    finialBase.castShadow = true;
+    finialGroup.add(finialBase);
     
-    // Ground platform
-    const groundGeometry = new THREE.CylinderGeometry(2, 2, 0.2, 32);
-    const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xc19a6b });
+    // Middle part
+    const midGeometry = new THREE.CylinderGeometry(0.15, 0.2, 0.3, 16);
+    const midPart = new THREE.Mesh(midGeometry, metalMaterial);
+    midPart.position.y = 0.2;
+    midPart.castShadow = true;
+    finialGroup.add(midPart);
+    
+    // Top cone
+    const topConeGeometry = new THREE.ConeGeometry(0.15, 0.4, 16);
+    const topCone = new THREE.Mesh(topConeGeometry, metalMaterial);
+    topCone.position.y = 0.55;
+    topCone.castShadow = true;
+    finialGroup.add(topCone);
+    
+    finialGroup.position.y = (totalHeight / 2) + 0.25;
+    group.add(finialGroup);
+    
+    // Enhanced base of the monument with decorative details
+    const baseGroup = new THREE.Group();
+    
+    // Main base
+    const baseGeometry = new THREE.CylinderGeometry(1.4, 1.5, 0.6, 32);
+    const base = new THREE.Mesh(baseGeometry, sandstoneMaterial.clone());
+    base.castShadow = true;
+    base.receiveShadow = true;
+    baseGroup.add(base);
+    
+    // Add decorative band around base
+    const baseBandGeometry = new THREE.TorusGeometry(1.42, 0.05, 8, 64);
+    const baseBand = new THREE.Mesh(baseBandGeometry, metalMaterial);
+    baseBand.rotation.x = Math.PI / 2;
+    baseBand.position.y = 0.15;
+    baseGroup.add(baseBand);
+    
+    // Add decorative arches around base
+    const archCount = 12;
+    for (let a = 0; a < archCount; a++) {
+      const angle = (a / archCount) * Math.PI * 2;
+      
+      // Create arch shape
+      const archWidth = 0.3;
+      const archHeight = 0.3;
+      
+      const archShape = new THREE.Shape();
+      archShape.moveTo(-archWidth/2, 0);
+      archShape.lineTo(-archWidth/2, archHeight * 0.6);
+      archShape.quadraticCurveTo(0, archHeight, archWidth/2, archHeight * 0.6);
+      archShape.lineTo(archWidth/2, 0);
+      
+      const archExtrudeSettings = {
+        steps: 1,
+        depth: 0.1,
+        bevelEnabled: true,
+        bevelThickness: 0.02,
+        bevelSize: 0.02,
+        bevelSegments: 3
+      };
+      
+      const archGeometry = new THREE.ExtrudeGeometry(archShape, archExtrudeSettings);
+      const archMaterial = marbleMaterial.clone();
+      archMaterial.color.setHex(0xeeeae6);
+      
+      const arch = new THREE.Mesh(archGeometry, archMaterial);
+      
+      // Position the arch around the base
+      arch.position.set(
+        Math.sin(angle) * 1.45,
+        -0.15,
+        Math.cos(angle) * 1.45
+      );
+      arch.rotation.y = angle + Math.PI;
+      arch.scale.set(0.8, 0.8, 0.8);
+      
+      arch.castShadow = true;
+      baseGroup.add(arch);
+    }
+    
+    baseGroup.position.y = -(totalHeight / 2) - 0.3;
+    group.add(baseGroup);
+    
+    // Expanded surrounding area with detailed courtyard
+    const surroundingGroup = new THREE.Group();
+    
+    // Create ground platform with detailed texturing
+    const groundGeometry = new THREE.CylinderGeometry(3, 3, 0.2, 32);
+    const groundMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xc19a6b,
+      roughness: 0.9,
+      metalness: 0.0
+    });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.position.y = -(totalHeight / 2) - 0.6;
-    group.add(ground);
+    ground.receiveShadow = true;
+    surroundingGroup.add(ground);
+    
+    // Add surrounding details - small structures and ruins
+    const addSurroundingDetail = () => {
+      // Create small ruins scattered around
+      const ruinCount = 8;
+      for (let i = 0; i < ruinCount; i++) {
+        const angle = (i / ruinCount) * Math.PI * 2;
+        const distance = 1.8 + Math.random() * 0.8;
+        
+        // Create a small ruined column or structure
+        const pillarHeight = 0.3 + Math.random() * 0.5;
+        const pillarRadius = 0.1 + Math.random() * 0.1;
+        
+        const ruinGeometry = new THREE.CylinderGeometry(
+          pillarRadius * 0.8, 
+          pillarRadius, 
+          pillarHeight, 
+          16
+        );
+        
+        const ruinMaterial = sandstoneMaterial.clone();
+        ruinMaterial.color.setHex(0xd2b48c - Math.random() * 0x101010);
+        
+        const ruin = new THREE.Mesh(ruinGeometry, ruinMaterial);
+        ruin.position.set(
+          Math.sin(angle) * distance,
+          pillarHeight / 2,
+          Math.cos(angle) * distance
+        );
+        
+        // Add some random rotation to make it look more like ruins
+        ruin.rotation.x = (Math.random() - 0.5) * 0.2;
+        ruin.rotation.z = (Math.random() - 0.5) * 0.2;
+        
+        ruin.castShadow = true;
+        ruin.receiveShadow = true;
+        surroundingGroup.add(ruin);
+      }
+      
+      // Add some fallen/broken pieces on the ground
+      const debrisCount = 12;
+      for (let i = 0; i < debrisCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 0.8 + Math.random() * 2;
+        
+        // Random shapes for debris
+        const shapes = [
+          new THREE.BoxGeometry(0.2, 0.1, 0.15),
+          new THREE.CylinderGeometry(0.1, 0.1, 0.2, 8),
+          new THREE.SphereGeometry(0.1, 8, 8)
+        ];
+        
+        const debrisMaterial = sandstoneMaterial.clone();
+        debrisMaterial.color.setHex(0xd2b48c);
+        
+        const debris = new THREE.Mesh(
+          shapes[Math.floor(Math.random() * shapes.length)],
+          debrisMaterial
+        );
+        
+        debris.position.set(
+          Math.sin(angle) * distance,
+          0.1,
+          Math.cos(angle) * distance
+        );
+        
+        // Random rotation
+        debris.rotation.set(
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+          Math.random() * Math.PI
+        );
+        
+        debris.castShadow = true;
+        debris.receiveShadow = true;
+        surroundingGroup.add(debris);
+      }
+    };
+    
+    addSurroundingDetail();
+    
+    surroundingGroup.position.y = -(totalHeight / 2) - 0.7;
+    group.add(surroundingGroup);
   };
   
   // Function to create a generic model

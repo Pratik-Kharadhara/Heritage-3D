@@ -22,6 +22,7 @@ export const models = pgTable("models", {
   imageUrl: text("image_url"),
   year: text("year"),
   style: text("style"),
+  material: text("material"),
   featured: boolean("featured"),
   createdAt: text("created_at").notNull(),
 });
