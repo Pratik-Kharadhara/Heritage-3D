@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -94,6 +94,15 @@ export default function ModelsPage() {
     century: 'all',
     type: 'all'
   });
+  
+  // Handle URL query parameters for direct access to a model
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const modelId = params.get('id');
+    if (modelId) {
+      setSelectedModel(parseInt(modelId, 10));
+    }
+  }, []);
   
   // Filter models based on search query and filters
   const filteredModels = models.filter(model => {

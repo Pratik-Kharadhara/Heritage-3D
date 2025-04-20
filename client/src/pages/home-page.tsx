@@ -319,9 +319,10 @@ export default function HomePage() {
                     ...model,
                     featured: index === 0, // Make first model featured
                     year: index === 0 ? "1632-1653" : index === 1 ? "1192-1220" : "1799-1803", 
-                    style: index === 0 ? "Mughal Architecture" : index === 1 ? "Indo-Islamic" : "Rajput Architecture"
+                    style: index === 0 ? "Mughal Architecture" : index === 1 ? "Indo-Islamic" : "Rajput Architecture",
+                    material: index === 0 ? "White Marble" : index === 1 ? "Red Sandstone & Marble" : "Pink Sandstone"
                   }} 
-                  onClick={() => setActiveModelId(model.id)} 
+                  onClick={() => window.location.href = `/models?id=${model.id}`} 
                 />
               </motion.div>
             ))}
