@@ -139,6 +139,8 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
           // Load the model
           const loader = new OBJLoader();
           
+          console.log('Loading 3D model from:', modelUrl);
+          
           loader.load(
             modelUrl,
             // Success callback
