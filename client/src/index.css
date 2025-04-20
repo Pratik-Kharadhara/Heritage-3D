@@ -48,6 +48,14 @@
 }
 
 @layer components {
+  /* Grid pattern for background */
+  .bg-grid-pattern {
+    background-size: 50px 50px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  }
+  
   /* Advanced neon glowing effect for text with animation */
   .neon-text {
     text-shadow: 
@@ -426,5 +434,70 @@
     box-shadow: 
       -5px 5px 20px rgba(0, 0, 0, 0.3),
       -15px 15px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Floating animation */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 6s infinite;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 0.4;
+      transform: scale(0.95);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 0.4;
+      transform: scale(0.95);
+    }
+  }
+  
+  /* Marble texture effect */
+  .marble-texture {
+    background-image: 
+      radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+      linear-gradient(135deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background-color: rgba(240, 240, 250, 0.05);
+  }
+  
+  /* Sandstone texture */
+  .sandstone-texture {
+    background-image: 
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E"),
+      linear-gradient(135deg, rgba(210, 180, 140, 0.1) 0%, rgba(150, 120, 80, 0.1) 100%);
+  }
+  
+  /* Image with subtle zoom on hover */
+  .image-zoom {
+    overflow: hidden;
+  }
+  
+  .image-zoom img {
+    transition: transform 0.5s ease;
+  }
+  
+  .image-zoom:hover img {
+    transform: scale(1.05);
   }
 }

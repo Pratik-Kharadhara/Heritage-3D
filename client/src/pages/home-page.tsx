@@ -363,70 +363,229 @@ export default function HomePage() {
         </div>
       </section>
       
-      {/* Text to 3D Converter Section Preview */}
+      {/* Enhanced Text to 3D Converter Section Preview */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10"></div>
+        {/* Background with gradient and grid pattern */}
+        <div className="absolute inset-0 bg-gradient-primary opacity-5"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl"></div>
+        {/* Animated decorative elements */}
+        <motion.div 
+          className="absolute top-20 left-[10%] w-96 h-96 rounded-full bg-primary/10 filter blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.15, 0.1],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
         
-        <div className="container mx-auto px-4 relative">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Transform Text to 3D Models
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Enter detailed descriptions of Indian heritage monuments and watch as our AI generates interactive 3D models.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <div className="flex justify-center">
-              <Button size="lg" className="group" asChild>
-                <Link href="/converter">
-                  <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
-                  Try Text to 3D Converter
-                </Link>
-              </Button>
+        <motion.div 
+          className="absolute bottom-10 right-[10%] w-64 h-64 rounded-full bg-secondary/15 filter blur-3xl"
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            opacity: [0.15, 0.05, 0.15],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        
+        <motion.div 
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-primary/5 pointer-events-none"
+          style={{ opacity: 0.2 }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+        />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
+            {/* Text content */}
+            <div className="lg:w-1/2">
+              <motion.div 
+                className="max-w-xl"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                <h2 className="font-bold text-3xl md:text-4xl neon-text-intense mb-6">
+                  Transform Text to 3D Models
+                </h2>
+                <p className="text-muted-foreground glass-panel p-6 rounded-lg mb-8 leading-relaxed">
+                  Enter detailed descriptions of Indian heritage monuments and watch as our AI generates interactive 3D models. Our advanced technology transforms your words into stunning virtual replicas for education, exploration, and preservation.
+                </p>
+                <motion.div 
+                  className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <Button 
+                    size="lg" 
+                    className="glow-button-accent group relative overflow-hidden"
+                    asChild
+                  >
+                    <Link href="/converter">
+                      <Wand2 className="mr-2 h-5 w-5 group-hover:animate-bounce" /> 
+                      <span className="relative z-10">Try Text to 3D Converter</span>
+                    </Link>
+                  </Button>
+                </motion.div>
+              </motion.div>
             </div>
-          </motion.div>
+            
+            {/* Visualization side */}
+            <div className="lg:w-1/2">
+              <motion.div 
+                className="relative w-full h-[400px] rounded-xl"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                {/* Visualization container */}
+                <div className="absolute inset-0 rounded-xl neon-card overflow-hidden flex items-center justify-center">
+                  <motion.div 
+                    className="w-full h-full bg-gradient-to-br from-secondary/5 to-primary/5 rounded-xl flex flex-col items-center justify-center p-8 text-center relative"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    {/* Text to 3D conversion illustration */}
+                    <div className="flex items-center mb-6 relative">
+                      <div className="w-32 h-32 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border border-white/10">
+                        <div className="text-xs text-white/70 font-mono p-2">
+                          {"<description>\nTaj Mahal\nWhite marble\nDomed central chamber\nFour minarets\n</description>"}
+                        </div>
+                      </div>
+                      
+                      <div className="mx-4 text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </div>
+                      
+                      <div className="w-40 h-40 rounded-xl neon-border-accent overflow-hidden flex items-center justify-center animated-border">
+                        <div className="w-full h-full bg-black/30 flex items-center justify-center">
+                          <motion.div 
+                            className="w-24 h-24"
+                            animate={{ 
+                              rotateY: 360,
+                            }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-full h-full text-primary opacity-80">
+                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                          </motion.div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <motion.p 
+                      className="text-sm text-muted-foreground mt-6 hologram-text" 
+                      data-text="AI Processing..."
+                    >
+                      AI Processing...
+                    </motion.p>
+                    
+                    {/* Processing dots */}
+                    <div className="flex space-x-2 mt-2">
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-primary"
+                        animate={{ opacity: [0.2, 1, 0.2] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+                      />
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-primary"
+                        animate={{ opacity: [0.2, 1, 0.2] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+                      />
+                      <motion.div 
+                        className="w-2 h-2 rounded-full bg-primary"
+                        animate={{ opacity: [0.2, 1, 0.2] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: 1 }}
+                      />
+                    </div>
+                  </motion.div>
+                </div>
+                
+                {/* Decorative elements */}
+                <motion.div 
+                  className="absolute -bottom-6 -left-6 w-32 h-32 bg-secondary rounded-full mix-blend-screen filter blur-xl opacity-30 pointer-events-none"
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
+                  transition={{ duration: 6, repeat: Infinity }}
+                />
+                
+                <motion.div 
+                  className="absolute -top-10 -right-10 w-40 h-40 bg-primary/50 rounded-full mix-blend-screen filter blur-xl opacity-20 pointer-events-none"
+                  animate={{ scale: [1.2, 1, 1.2], opacity: [0.15, 0.25, 0.15] }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                />
+              </motion.div>
+            </div>
+          </div>
         </div>
       </section>
       
-      {/* Virtual Tour Section */}
-      <section className="py-20 relative overflow-hidden bg-muted/30">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-muted pointer-events-none"></div>
+      {/* Enhanced Virtual Tour Section */}
+      <section className="py-20 relative overflow-hidden">
+        {/* Background with gradient and texture */}
+        <div className="absolute inset-0 bg-gradient-dark opacity-90"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="absolute inset-0 marble-texture opacity-10"></div>
         
-        <div className="container mx-auto px-4 relative">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-secondary/20 to-transparent"></div>
+        
+        <motion.div 
+          className="absolute top-1/3 -left-28 w-56 h-56 rounded-full bg-primary/10 filter blur-3xl"
+          animate={{ 
+            opacity: [0.05, 0.1, 0.05],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        <motion.div 
+          className="absolute bottom-1/3 -right-28 w-56 h-56 rounded-full bg-secondary/10 filter blur-3xl"
+          animate={{ 
+            opacity: [0.1, 0.05, 0.1],
+            scale: [1.1, 1, 1.1],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div 
-            className="text-center mb-12"
+            className="text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true, margin: "-100px" }}
           >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
+            <h2 className="font-bold text-3xl md:text-4xl neon-text-intense mb-4">
               Virtual Heritage Tours
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto glass-panel p-4 rounded-lg">
               Immerse yourself in 360° virtual tours of India's most fascinating historical sites and monuments.
+              Experience the grandeur and architectural brilliance through interactive explorations.
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Featured Tour */}
+          {/* Animated separator */}
+          <motion.div 
+            className="w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mb-16"
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {/* Featured Tour with enhanced animation */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -437,14 +596,14 @@ export default function HomePage() {
               <TourCard tour={featuredTour} featured={true} />
             </motion.div>
             
-            {/* Additional Tours */}
+            {/* Additional Tours with staggered animations */}
             <div className="grid grid-cols-1 gap-8">
               {additionalTours.map((tour, index) => (
                 <motion.div
                   key={tour.id}
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
                   viewport={{ once: true, margin: "-100px" }}
                 >
                   <TourCard tour={tour} />
@@ -460,57 +619,251 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true, margin: "-100px" }}
           >
-            <Button variant="outline" size="lg">
-              Explore All Virtual Tours
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="glow-button relative group overflow-hidden px-10 py-6"
+            >
+              <span className="relative z-10 flex items-center font-medium">
+                Explore All Virtual Tours
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
             </Button>
           </motion.div>
         </div>
       </section>
       
-      {/* Knowledge Hub Preview */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Heritage Knowledge Hub
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ask questions about Indian monuments, cultural traditions, historical events, and architectural styles.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="flex justify-center"
-          >
-            <Button asChild>
-              <Link href="/assistant">
-                Explore Knowledge Hub
-              </Link>
-            </Button>
-          </motion.div>
+      {/* Enhanced Knowledge Hub Preview */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Background with gradient */}
+        <div className="absolute inset-0 bg-gradient-accent opacity-5"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        {/* Animated particles */}
+        <motion.div 
+          className="absolute top-1/4 left-1/3 w-72 h-72 rounded-full bg-primary/5 filter blur-3xl mix-blend-screen"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.05, 0.1, 0.05],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        <motion.div 
+          className="absolute bottom-1/4 right-1/3 w-60 h-60 rounded-full bg-secondary/10 filter blur-3xl mix-blend-screen"
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            opacity: [0.1, 0.05, 0.1],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Content Side */}
+            <div className="lg:w-1/2 order-2 lg:order-1">
+              <motion.div 
+                className="max-w-xl"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                <h2 className="font-bold text-3xl md:text-4xl neon-text-accent mb-6">
+                  Heritage Knowledge Hub
+                </h2>
+                <p className="text-muted-foreground glass-panel p-6 rounded-lg mb-8 leading-relaxed">
+                  Access a vast repository of information about Indian monuments, cultural traditions, 
+                  historical events, and architectural styles. Our AI-powered knowledge assistant provides 
+                  accurate and detailed answers to your questions about India's rich heritage.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  {[
+                    "Learn about architectural styles and influences",
+                    "Discover historical significance and cultural context",
+                    "Explore preservation efforts and restoration techniques",
+                    "Understand monument construction methods and materials"
+                  ].map((feature, index) => (
+                    <motion.div 
+                      key={index}
+                      className="flex items-start"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 * index }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="mr-3 mt-1 text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <p className="text-muted-foreground">{feature}</p>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  viewport={{ once: true }}
+                >
+                  <Button 
+                    size="lg" 
+                    className="glow-button-accent group relative overflow-hidden"
+                    asChild
+                  >
+                    <Link href="/assistant">
+                      <span className="relative z-10 flex items-center">
+                        Explore Knowledge Hub
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </span>
+                    </Link>
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </div>
+            
+            {/* Chat Visualization */}
+            <div className="lg:w-1/2 order-1 lg:order-2">
+              <motion.div 
+                className="relative w-full h-[450px]"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                <div className="absolute inset-0 rounded-xl neon-card overflow-hidden flex flex-col p-6">
+                  {/* Chat interface mockup */}
+                  <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
+                    <h3 className="text-lg font-semibold hologram-text" data-text="Heritage Knowledge Assistant">
+                      Heritage Knowledge Assistant
+                    </h3>
+                    <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+                    {/* Sample chat messages */}
+                    <motion.div 
+                      className="flex justify-start"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="bg-primary/10 backdrop-blur-sm rounded-xl p-3 max-w-[80%] text-sm">
+                        <p>Tell me about the architectural design of the Taj Mahal.</p>
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="flex justify-end"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="bg-secondary/10 backdrop-blur-sm rounded-xl p-3 max-w-[80%] text-sm">
+                        <p>The Taj Mahal is a masterpiece of Mughal architecture, combining elements from Persian, Islamic, and Indian architectural styles...</p>
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="flex justify-start"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.5 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="bg-primary/10 backdrop-blur-sm rounded-xl p-3 max-w-[80%] text-sm">
+                        <p>What materials were used in its construction?</p>
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="flex justify-end"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.7 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="bg-secondary/10 backdrop-blur-sm rounded-xl p-3 max-w-[80%] text-sm">
+                        <p>The Taj Mahal is primarily constructed of white marble from Makrana, Rajasthan. Semi-precious stones like jade, crystal, turquoise, lapis lazuli, and sapphire were used for the intricate inlay work...</p>
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Input field mockup */}
+                  <motion.div 
+                    className="relative"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.9 }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="flex items-center bg-card/30 rounded-lg border border-white/10 backdrop-blur-sm p-3">
+                      <input 
+                        type="text" 
+                        className="flex-1 bg-transparent border-none outline-none text-sm placeholder-white/40"
+                        placeholder="Ask about Indian heritage monuments..."
+                        disabled
+                      />
+                      <button className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="22" y1="2" x2="11" y2="13"></line>
+                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+                
+                {/* Decorative elements */}
+                <motion.div 
+                  className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-accent/10 filter blur-3xl opacity-40 mix-blend-screen"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.4, 0.3]
+                  }}
+                  transition={{ duration: 7, repeat: Infinity }}
+                />
+                
+                <motion.div 
+                  className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-secondary/20 filter blur-3xl opacity-40 mix-blend-screen"
+                  animate={{ 
+                    scale: [1.2, 1, 1.2],
+                    opacity: [0.4, 0.3, 0.4]
+                  }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                />
+              </motion.div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
