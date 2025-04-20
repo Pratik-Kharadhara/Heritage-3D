@@ -51,50 +51,50 @@
   /* Neon glowing effect for text */
   .neon-text {
     text-shadow: 
-      0 0 5px theme('colors.primary.400'),
-      0 0 10px theme('colors.primary.400'),
-      0 0 20px theme('colors.primary.400'),
-      0 0 40px theme('colors.primary.500');
-    color: theme('colors.primary.300');
+      0 0 5px #60a5fa,
+      0 0 10px #60a5fa,
+      0 0 20px #3b82f6,
+      0 0 40px #2563eb;
+    color: #93c5fd;
   }
   
   /* Intense neon text for headings */
   .neon-text-intense {
     text-shadow: 
-      0 0 5px theme('colors.secondary.400'),
-      0 0 10px theme('colors.secondary.400'),
-      0 0 20px theme('colors.secondary.400'),
-      0 0 40px theme('colors.secondary.500'),
-      0 0 80px theme('colors.secondary.600');
+      0 0 5px #60a5fa,
+      0 0 10px #60a5fa,
+      0 0 20px #3b82f6,
+      0 0 40px #2563eb,
+      0 0 80px #1d4ed8;
     color: white;
   }
   
   /* Accent neon text */
   .neon-text-accent {
     text-shadow: 
-      0 0 5px theme('colors.accent.400'),
-      0 0 10px theme('colors.accent.400'),
-      0 0 20px theme('colors.accent.500');
-    color: theme('colors.accent.300');
+      0 0 5px #c4b5fd,
+      0 0 10px #a78bfa,
+      0 0 20px #8b5cf6;
+    color: #ddd6fe;
   }
   
   /* Neon border effect */
   .neon-border {
     box-shadow: 
-      0 0 5px theme('colors.primary.600'),
-      0 0 10px theme('colors.primary.500'),
-      inset 0 0 5px theme('colors.primary.600'),
-      inset 0 0 10px theme('colors.primary.500');
-    border: 1px solid theme('colors.primary.400');
+      0 0 5px #1d4ed8,
+      0 0 10px #3b82f6,
+      inset 0 0 5px #1d4ed8,
+      inset 0 0 10px #3b82f6;
+    border: 1px solid #60a5fa;
   }
   
   /* Accent neon border */
   .neon-border-accent {
     box-shadow: 
-      0 0 5px theme('colors.accent.600'),
-      0 0 10px theme('colors.accent.500'),
-      inset 0 0 5px theme('colors.accent.600');
-    border: 1px solid theme('colors.accent.400');
+      0 0 5px #7c3aed,
+      0 0 10px #8b5cf6,
+      inset 0 0 5px #7c3aed;
+    border: 1px solid #a78bfa;
   }
   
   /* Button animation effects */
@@ -102,15 +102,15 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px theme('colors.primary.500');
-    border: 1px solid theme('colors.primary.400');
-    background: linear-gradient(45deg, theme('colors.primary.700'), theme('colors.primary.900'));
+    box-shadow: 0 0 10px #3b82f6;
+    border: 1px solid #60a5fa;
+    background: linear-gradient(45deg, #1e40af, #1e3a8a);
   }
   
   .glow-button:hover {
     box-shadow: 
-      0 0 15px theme('colors.primary.500'),
-      0 0 30px theme('colors.primary.400');
+      0 0 15px #3b82f6,
+      0 0 30px #60a5fa;
     transform: translateY(-2px);
   }
   
@@ -143,15 +143,15 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px theme('colors.accent.500');
-    border: 1px solid theme('colors.accent.400');
-    background: linear-gradient(45deg, theme('colors.accent.700'), theme('colors.accent.900'));
+    box-shadow: 0 0 10px #8b5cf6;
+    border: 1px solid #a78bfa;
+    background: linear-gradient(45deg, #6d28d9, #4c1d95);
   }
   
   .glow-button-accent:hover {
     box-shadow: 
-      0 0 15px theme('colors.accent.500'),
-      0 0 30px theme('colors.accent.400');
+      0 0 15px #8b5cf6,
+      0 0 30px #a78bfa;
     transform: translateY(-2px);
   }
   
@@ -183,17 +183,17 @@
   .neon-card {
     background: rgba(15, 15, 25, 0.8);
     backdrop-filter: blur(10px);
-    border-radius: theme('borderRadius.lg');
+    border-radius: 0.5rem;
     transition: all 0.3s ease;
     box-shadow: 
-      0 0 10px theme('colors.primary.900'),
+      0 0 10px #1e3a8a,
       0 0 20px rgba(30, 30, 50, 0.3);
     border: 1px solid rgba(70, 70, 100, 0.3);
   }
   
   .neon-card:hover {
     box-shadow: 
-      0 0 15px theme('colors.primary.800'),
+      0 0 15px #1e40af,
       0 0 30px rgba(40, 40, 80, 0.4);
     transform: translateY(-5px);
   }
@@ -201,7 +201,7 @@
   /* Glowing border animation */
   .animated-border {
     position: relative;
-    border-radius: theme('borderRadius.lg');
+    border-radius: 0.5rem;
     overflow: hidden;
   }
   
@@ -213,9 +213,9 @@
     border-radius: inherit;
     background: linear-gradient(
       to right,
-      theme('colors.primary.500'),
-      theme('colors.accent.500'),
-      theme('colors.primary.500')
+      #3b82f6,
+      #8b5cf6,
+      #3b82f6
     );
     -webkit-mask: 
       linear-gradient(#fff 0 0) content-box, 
@@ -251,7 +251,7 @@
     background: rgba(30, 30, 50, 0.3);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(70, 70, 100, 0.2);
-    border-radius: theme('borderRadius.lg');
+    border-radius: 0.5rem;
   }
   
   /* Gradient backgrounds */
