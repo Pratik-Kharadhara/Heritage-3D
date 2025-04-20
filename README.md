@@ -7,7 +7,7 @@
 ## 🌟 Features
 
 ### 🎨 Text-to-3D Generation
-- Generate base 3D meshes from **text prompts** or **image inputs** using a custom AI model.
+- Generate base 3D meshes from **text prompts** using a custom AI model.
 
 ### 🛠️ Model Refinement
 - Auto-smooth, texture, and light the models using:
