@@ -40,11 +40,10 @@ const OBJModelViewer = ({ modelUrl }) => {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         
-        if (mountRef.current.hasChildNodes()) {
-          // Clear previous renderer if it exists
-          while (mountRef.current.firstChild) {
-            mountRef.current.removeChild(mountRef.current.firstChild);
-          }
+        // Safely clear the container
+        if (mountRef.current) {
+          // Clear all children safely
+          mountRef.current.innerHTML = '';
         }
         
         mountRef.current.appendChild(renderer.domElement);
@@ -235,11 +234,14 @@ const OBJModelViewer = ({ modelUrl }) => {
       
       if (renderer) {
         renderer.dispose();
-        if (mountRef.current && renderer.domElement) {
+        
+        // Safe cleanup of DOM elements
+        if (mountRef.current) {
           try {
-            mountRef.current.removeChild(renderer.domElement);
+            // Clear the container safely
+            mountRef.current.innerHTML = '';
           } catch (e) {
-            console.warn('Error removing renderer:', e);
+            console.warn('Error cleaning up renderer container:', e);
           }
         }
       }

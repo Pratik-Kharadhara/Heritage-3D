@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Wand2 } from 'lucide-react';
-import OBJModelViewer from '@/components/OBJModelViewer';
+import SimpleOBJViewer from '@/components/SimpleOBJViewer';
 import { 
   Card, 
   CardContent 
@@ -200,8 +200,8 @@ export default function ConverterPage() {
                   className="h-full"
                 >
                   <div className="animated-border h-full">
-                    {modelUrl ? (
-                      <OBJModelViewer modelUrl={modelUrl} />
+                    {modelName ? (
+                      <SimpleOBJViewer modelName={modelName} />
                     ) : (
                       <div className="bg-muted/20 flex items-center justify-center h-full w-full rounded-lg">
                         <div className="flex flex-col items-center justify-center space-y-4 p-6 text-center">
