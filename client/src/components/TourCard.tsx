@@ -46,7 +46,7 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
   if (featured) {
     return (
       <motion.div 
-        className="animated-border neon-card card-3d rounded-2xl overflow-hidden shadow-xl row-span-2 group relative"
+        className="liquid-gradient-border neon-card card-3d rounded-2xl overflow-hidden shadow-xl row-span-2 group relative"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -77,7 +77,7 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
           {/* Play button */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.button 
-              className="w-20 h-20 rounded-full bg-primary/30 backdrop-blur-md flex items-center justify-center border border-primary/50 group"
+              className="w-20 h-20 rounded-full liquid-gradient-play backdrop-blur-md flex items-center justify-center border border-primary/50 group"
               variants={buttonVariants}
               initial="rest"
               whileHover="hover"
@@ -164,9 +164,9 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
           
           <Button 
             onClick={onClick} 
-            className="glow-button-accent w-full group relative overflow-hidden"
+            className="liquid-gradient-button w-full group relative overflow-hidden"
           >
-            <span className="relative z-10 font-medium">Start Virtual Tour</span>
+            <span className="relative z-10 font-medium text-white">Start Virtual Tour</span>
             <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           </Button>
         </div>
@@ -176,7 +176,7 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
   
   return (
     <motion.div 
-      className="neon-card rounded-xl overflow-hidden relative group"
+      className="liquid-gradient-border neon-card rounded-xl overflow-hidden relative group"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -197,7 +197,7 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
         {/* Play button */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.button 
-            className="w-14 h-14 rounded-full bg-primary/40 backdrop-blur-md flex items-center justify-center border border-primary/50"
+            className="w-14 h-14 rounded-full liquid-gradient-play backdrop-blur-md flex items-center justify-center border border-primary/50"
             variants={buttonVariants}
             initial="rest"
             whileHover="hover"
@@ -252,12 +252,12 @@ const TourCard: React.FC<TourCardProps> = ({ tour, featured = false, onClick }) 
         <Button 
           onClick={onClick}
           size="sm" 
-          className="glow-button w-full flex items-center justify-center gap-1 mt-2"
+          className="liquid-gradient-button w-full flex items-center justify-center gap-1 mt-2"
         >
-          <span>Explore Tour</span>
+          <span className="text-white">Explore Tour</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3 w-3 ml-1"
+            className="h-3 w-3 ml-1 text-white"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
