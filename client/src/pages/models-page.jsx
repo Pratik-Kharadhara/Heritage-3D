@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { EyeIcon, Search, X, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useLanguage } from '@/context/language-context';
-import MinimalModelViewer from '@/components/MinimalModelViewer';
+import EnhancedModelViewer from '@/components/EnhancedModelViewer';
 
 // Fallback models if API fails
 const FALLBACK_MODELS = [
@@ -126,7 +126,7 @@ const ModelPreviewModal = ({ model, onClose }) => {
         </div>
         
         <div className="flex-1 min-h-[300px] md:min-h-[500px] overflow-hidden">
-          <MinimalModelViewer modelName={model.name} />
+          <EnhancedModelViewer modelName={model.name} />
         </div>
         
         <div className="p-4 bg-muted/20 border-t">
