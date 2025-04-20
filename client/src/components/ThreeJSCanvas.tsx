@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { OBJLoader } from 'three-obj-mtl-loader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { motion } from 'framer-motion';
 
 interface ThreeJSCanvasProps {
@@ -11,300 +11,289 @@ interface ThreeJSCanvasProps {
 
 const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const controlsRef = useRef<OrbitControls | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
-  const objectRef = useRef<THREE.Object3D | null>(null);
-
+  
+  // Setup and animation will be handled in this effect
   useEffect(() => {
     if (!mountRef.current) return;
-
-    // Creating scene
+    
+    // Track whether the component is still mounted
+    let isMounted = true;
+    
+    // Create scene
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
-    scene.background = new THREE.Color(0xf5f5f5);
-
-    // Setting up camera
+    scene.background = new THREE.Color(0xf0f0f0);
+    
+    // Set up renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    // Clear previous canvas if any
+    while (mountRef.current.firstChild) {
+      mountRef.current.removeChild(mountRef.current.firstChild);
+    }
+    
+    // Add renderer to DOM
+    mountRef.current.appendChild(renderer.domElement);
+    
+    // Set up camera
     const camera = new THREE.PerspectiveCamera(
-      75,
+      45,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    cameraRef.current = camera;
     camera.position.z = 5;
-
-    // Setting up renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rendererRef.current = renderer;
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    renderer.shadowMap.enabled = true;
     
-    // Clear previous canvas if any
-    if (mountRef.current.firstChild) {
-      mountRef.current.removeChild(mountRef.current.firstChild);
-    }
-    
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Add orbit controls
+    // Add orbital controls
     const controls = new OrbitControls(camera, renderer.domElement);
-    controlsRef.current = controls;
     controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.enablePan = true;
+    controls.dampingFactor = 0.1;
     controls.enableZoom = true;
-
-    // Add lighting
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
-    hemiLight.position.set(0, 300, 0);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(75, 300, -75);
-    dirLight.castShadow = true;
-    dirLight.shadow.camera.top = 100;
-    dirLight.shadow.camera.bottom = -100;
-    dirLight.shadow.camera.left = -100;
-    dirLight.shadow.camera.right = 100;
-    scene.add(dirLight);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-
-    // Add a simple grid for reference
-    const gridHelper = new THREE.GridHelper(20, 20);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+    
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight2.position.set(-1, -1, -1);
+    scene.add(directionalLight2);
+    
+    // Create and add grid helper
+    const gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);
-
-    // Animation function
+    
+    // Animation loop
     const animate = () => {
+      if (!isMounted) return;
+      
       requestAnimationFrame(animate);
-      if (controlsRef.current) {
-        controlsRef.current.update();
-      }
+      controls.update();
       renderer.render(scene, camera);
     };
-
+    
+    // Handle placeholder display (cube)
     if (placeholder) {
-      // Add placeholder geometry
-      const geometry = new THREE.BoxGeometry(2, 2, 2);
-      const material = new THREE.MeshStandardMaterial({ color: 0x1E3A8A });
-      const cube = new THREE.Mesh(geometry, material);
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0x3366cc,
+        specular: 0x111111, 
+        shininess: 30 
+      });
+      
+      const cube = new THREE.Mesh(boxGeometry, boxMaterial);
       scene.add(cube);
-      objectRef.current = cube;
-
-      // Animation loop for placeholder
-      const animatePlaceholder = () => {
-        requestAnimationFrame(animatePlaceholder);
+      
+      // Rotate the cube continuously
+      const rotateCube = () => {
+        if (!isMounted) return;
+        
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
-        if (controlsRef.current) {
-          controlsRef.current.update();
-        }
-        renderer.render(scene, camera);
+        
+        requestAnimationFrame(rotateCube);
       };
-      animatePlaceholder();
-    } else if (modelUrl) {
-      // Load 3D model from URL
+      
+      rotateCube();
+      animate();
+    } 
+    // Handle model loading
+    else if (modelUrl) {
       setIsLoading(true);
-      console.log("Loading model from URL:", modelUrl);
-
-      try {
-        // Create a temporary placeholder while loading
-        const tempGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-        const tempMaterial = new THREE.MeshStandardMaterial({ 
-          color: 0x888888,
-          wireframe: true
-        });
-        const tempSphere = new THREE.Mesh(tempGeometry, tempMaterial);
-        scene.add(tempSphere);
+      
+      // Show a temporary placeholder while loading
+      const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x999999,
+        wireframe: true
+      });
+      const loadingSphere = new THREE.Mesh(geometry, material);
+      scene.add(loadingSphere);
+      
+      // Animate the loading sphere
+      const rotateSphere = () => {
+        if (!isMounted) return;
         
-        // Start the animation loop immediately
-        animate();
-
-        // Fetch the model file to make sure it exists
-        fetch(modelUrl)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`Failed to fetch model: ${response.status} ${response.statusText}`);
+        loadingSphere.rotation.y += 0.02;
+        requestAnimationFrame(rotateSphere);
+      };
+      
+      rotateSphere();
+      animate();
+      
+      // Load the model
+      const loader = new OBJLoader();
+      
+      loader.load(
+        modelUrl,
+        // Success callback
+        (object) => {
+          if (!isMounted) return;
+          
+          // Remove loading placeholder
+          scene.remove(loadingSphere);
+          
+          // Calculate model size and center
+          const box = new THREE.Box3().setFromObject(object);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          
+          // Scale model to fit the view
+          const maxDimension = Math.max(size.x, size.y, size.z);
+          const scale = 2 / maxDimension;
+          object.scale.set(scale, scale, scale);
+          
+          // Center the model
+          object.position.x = -center.x * scale;
+          object.position.y = -center.y * scale;
+          object.position.z = -center.z * scale;
+          
+          // Update material to be more visible
+          object.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: 0xf5f5f5,
+                specular: 0x333333,
+                shininess: 30,
+                flatShading: true
+              });
             }
-            return response.blob();
-          })
-          .then(blob => {
-            // Create a URL for the blob
-            const objectURL = URL.createObjectURL(blob);
-            
-            // Load the model using OBJLoader
-            const objLoader = new OBJLoader();
-            
-            objLoader.load(
-              objectURL,
-              (object) => {
-                // Success callback
-                console.log("Model loaded successfully:", object);
-                
-                // Clean up the temporary URL
-                URL.revokeObjectURL(objectURL);
-                
-                // Remove the temporary placeholder
-                scene.remove(tempSphere);
-                
-                // Scale and center the loaded object properly
-                object.scale.set(0.05, 0.05, 0.05); // Smaller scale for large models
-                
-                // Calculate bounding box
-                const bbox = new THREE.Box3().setFromObject(object);
-                const center = bbox.getCenter(new THREE.Vector3());
-                const size = bbox.getSize(new THREE.Vector3());
-                
-                // Center the object
-                object.position.set(-center.x, -center.y, -center.z);
-                
-                // Adjust camera position based on object size
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const fov = camera.fov * (Math.PI / 180);
-                let cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-                cameraZ *= 2.0; // Zoom out a bit more
-                camera.position.z = cameraZ;
-                
-                // Set camera limits
-                const minZ = maxDim * 0.5;
-                const maxZ = cameraZ * 5;
-                controlsRef.current!.minDistance = minZ;
-                controlsRef.current!.maxDistance = maxZ;
-                
-                // Update camera
-                camera.near = 0.1;
-                camera.far = cameraZ * 10;
-                camera.updateProjectionMatrix();
-                
-                // Add the object to the scene
-                scene.add(object);
-                objectRef.current = object;
-                
-                // Add a simple rotation animation
-                const rotateModel = () => {
-                  if (objectRef.current) {
-                    objectRef.current.rotation.y += 0.002;
-                  }
-                  requestAnimationFrame(rotateModel);
-                };
-                rotateModel();
-                
-                setIsLoading(false);
-              },
-              (xhr) => {
-                // Progress callback
-                const percentComplete = xhr.loaded / xhr.total * 100;
-                console.log(`${percentComplete.toFixed(2)}% loaded`);
-              },
-              (error) => {
-                // Error callback
-                console.error('Error loading model:', error);
-                setLoadingError(`Failed to load model: ${error.message}`);
-                setIsLoading(false);
-                // Clean up the temporary URL
-                URL.revokeObjectURL(objectURL);
-              }
-            );
-          })
-          .catch(error => {
-            console.error("Error fetching model:", error);
-            setLoadingError(`Error fetching model: ${error.message}`);
-            setIsLoading(false);
-            
-            // Show a fallback if loading fails
-            scene.remove(tempSphere);
-            const geometry = new THREE.BoxGeometry(2, 2, 2);
-            const material = new THREE.MeshStandardMaterial({ 
-              color: 0xEE3333,
-              wireframe: true
-            });
-            const errorCube = new THREE.Mesh(geometry, material);
-            scene.add(errorCube);
-            objectRef.current = errorCube;
           });
-      } catch (error) {
-        console.error("Error in model loading process:", error);
-        setLoadingError(`Error initializing model loader: ${error}`);
-        setIsLoading(false);
+          
+          // Add to scene
+          scene.add(object);
+          
+          // Add simple rotation
+          const rotateModel = () => {
+            if (!isMounted) return;
+            
+            object.rotation.y += 0.005;
+            requestAnimationFrame(rotateModel);
+          };
+          
+          rotateModel();
+          setIsLoading(false);
+        },
+        // Progress callback
+        (xhr) => {
+          if (!isMounted) return;
+          console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        // Error callback
+        (error) => {
+          if (!isMounted) return;
+          
+          console.error('Error loading model:', error);
+          setLoadingError('Failed to load the 3D model. Please try again later.');
+          setIsLoading(false);
+          
+          // Remove loading sphere
+          scene.remove(loadingSphere);
+          
+          // Add error indicator cube
+          const errorGeometry = new THREE.BoxGeometry(1, 1, 1);
+          const errorMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xff0000,
+            wireframe: true
+          });
+          
+          const errorCube = new THREE.Mesh(errorGeometry, errorMaterial);
+          scene.add(errorCube);
+          
+          // Rotate the error cube
+          const rotateErrorCube = () => {
+            if (!isMounted) return;
+            
+            errorCube.rotation.x += 0.01;
+            errorCube.rotation.y += 0.01;
+            
+            requestAnimationFrame(rotateErrorCube);
+          };
+          
+          rotateErrorCube();
+        }
+      );
+    } 
+    // No model URL, add a default scene
+    else {
+      // Create and add a torus knot
+      const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+      const material = new THREE.MeshPhongMaterial({ 
+        color: 0x3366cc,
+        specular: 0x111111,
+        shininess: 30
+      });
+      
+      const torusKnot = new THREE.Mesh(geometry, material);
+      scene.add(torusKnot);
+      
+      // Rotate the torus knot continuously
+      const rotateTorus = () => {
+        if (!isMounted) return;
         
-        // Show a fallback if loading fails
-        const geometry = new THREE.BoxGeometry(2, 2, 2);
-        const material = new THREE.MeshStandardMaterial({ 
-          color: 0xEE3333,
-          wireframe: true
-        });
-        const errorCube = new THREE.Mesh(geometry, material);
-        scene.add(errorCube);
-        objectRef.current = errorCube;
+        torusKnot.rotation.x += 0.01;
+        torusKnot.rotation.y += 0.01;
         
-        animate();
-      }
-    } else {
-      // If no model URL, just animate a simple scene
+        requestAnimationFrame(rotateTorus);
+      };
+      
+      rotateTorus();
       animate();
     }
-
-    // Handle resize
+    
+    // Handle window resize
     const handleResize = () => {
-      if (!mountRef.current || !cameraRef.current || !rendererRef.current) return;
+      if (!mountRef.current || !isMounted) return;
       
-      cameraRef.current.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+      camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     };
-
+    
     window.addEventListener('resize', handleResize);
-
-    // Cleanup
+    
+    // Clean up on unmount
     return () => {
+      isMounted = false;
       window.removeEventListener('resize', handleResize);
       
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
+      // Dispose of scene resources
+      renderer.dispose();
       
-      if (objectRef.current) {
-        if (objectRef.current.geometry) {
-          objectRef.current.geometry.dispose();
+      // Remove DOM elements
+      if (mountRef.current) {
+        while (mountRef.current.firstChild) {
+          mountRef.current.removeChild(mountRef.current.firstChild);
         }
-        
-        if (objectRef.current.material) {
-          if (Array.isArray(objectRef.current.material)) {
-            objectRef.current.material.forEach(material => material.dispose());
-          } else {
-            objectRef.current.material.dispose();
-          }
-        }
-        
-        scene.remove(objectRef.current);
       }
     };
   }, [modelUrl, placeholder]);
-
+  
   return (
-    <motion.div 
-      ref={mountRef} 
-      className="w-full h-full rounded-lg overflow-hidden"
+    <motion.div
+      ref={mountRef}
+      className="w-full h-full rounded-lg"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.4 }}
     >
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
-          <div className="text-center">
-            <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mb-2"></div>
-            <p className="text-sm font-medium">Loading 3D Model...</p>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm">
+          <div className="bg-card p-4 rounded-lg shadow-lg">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+            <p className="text-sm text-center font-medium">Loading 3D Model...</p>
           </div>
         </div>
       )}
       
       {loadingError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+        <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm">
           <div className="bg-destructive/10 text-destructive p-4 rounded-md max-w-xs text-center">
             <p className="font-medium mb-1">Error Loading Model</p>
             <p className="text-sm">{loadingError}</p>
