@@ -25,6 +25,8 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
     setIsLoading(true);
     setLoadingError(null);
     
+    console.log("ModelViewer initializing with:", { name, modelUrl });
+    
     try {
       // Clean up previous content
       while (canvasRef.current.firstChild) {
@@ -70,17 +72,23 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
       const gridHelper = new THREE.GridHelper(10, 10);
       scene.add(gridHelper);
       
-      // Create model based on monument type
+      // Create model based on monument type - ALWAYS use our custom models
       let mainGroup = new THREE.Group();
       
-      if (name?.toLowerCase().includes('taj mahal') || modelUrl?.toLowerCase().includes('taj')) {
-        // Advanced Taj Mahal stylized model
+      console.log("ModelViewer - Creating model for:", name, "URL:", modelUrl);
+      
+      // Use name for identification, fallback to modelUrl
+      const modelName = name?.toLowerCase() || "";
+      const modelUrlLower = modelUrl?.toLowerCase() || "";
+      
+      if (modelName.includes('taj mahal') || modelUrlLower.includes('taj')) {
+        console.log("Creating Taj Mahal 3D model");
         createTajMahalModel(mainGroup);
-      } else if (name?.toLowerCase().includes('qutub minar') || modelUrl?.toLowerCase().includes('qutub')) {
-        // Advanced Qutub Minar stylized model
+      } else if (modelName.includes('qutub minar') || modelUrlLower.includes('qutub')) {
+        console.log("Creating Qutub Minar 3D model");
         createQutubMinarModel(mainGroup);
       } else {
-        // Generic monument
+        console.log("Creating generic monument model");
         createGenericModel(mainGroup);
       }
       
@@ -140,10 +148,11 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Function to create enhanced Taj Mahal model with realistic marble texture
   const createTajMahalModel = (group: THREE.Group) => {
     // Create marble material with subtle veins
-    const marbleTexture = new THREE.TextureLoader().load('/taj-mahal.jpeg');
+    const marbleTexture = new THREE.TextureLoader().load('/api/modelfiles/taj-mahal.jpeg');
     marbleTexture.wrapS = THREE.RepeatWrapping;
     marbleTexture.wrapT = THREE.RepeatWrapping;
     marbleTexture.repeat.set(0.1, 0.1);
+    console.log("Loading Taj Mahal texture");
     
     // Enhanced marble material
     const marbleMaterial = new THREE.MeshPhysicalMaterial({ 
@@ -392,10 +401,11 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
   // Function to create enhanced Qutub Minar model with realistic red sandstone texture
   const createQutubMinarModel = (group: THREE.Group) => {
     // Create sandstone texture
-    const sandstoneTexture = new THREE.TextureLoader().load('/qutub-minar.jpg');
+    const sandstoneTexture = new THREE.TextureLoader().load('/api/modelfiles/qutub-minar.jpg');
     sandstoneTexture.wrapS = THREE.RepeatWrapping;
     sandstoneTexture.wrapT = THREE.RepeatWrapping;
     sandstoneTexture.repeat.set(0.2, 0.2);
+    console.log("Loading Qutub Minar texture");
     
     // Enhanced sandstone material with texture mapping
     const sandstoneMaterial = new THREE.MeshStandardMaterial({ 

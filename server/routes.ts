@@ -100,19 +100,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Special route to serve 3D model files
+  // Special route to serve 3D model files and textures
   app.get("/api/modelfiles/:filename", (req, res, next) => {
     try {
       const filename = req.params.filename;
-      const filePath = path.join(process.cwd(), 'public', 'models', filename);
       
-      console.log(`Attempting to serve 3D model file: ${filePath}`);
+      // First check for model files in /public/models
+      let filePath = path.join(process.cwd(), 'public', 'models', filename);
+      
+      // If file not found in models directory, check if it's a texture in /public
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(process.cwd(), 'public', filename);
+      }
+      
+      // Check in attached_assets as well if file was not found elsewhere
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(process.cwd(), 'attached_assets', filename);
+      }
+      
+      console.log(`Attempting to serve 3D model file or texture: ${filePath}`);
       
       if (fs.existsSync(filePath)) {
         res.sendFile(filePath);
       } else {
         console.error(`File not found: ${filePath}`);
-        res.status(404).json({ message: "Model file not found" });
+        res.status(404).json({ message: "File not found", searchedPaths: [
+          path.join(process.cwd(), 'public', 'models'),
+          path.join(process.cwd(), 'public'),
+          path.join(process.cwd(), 'attached_assets')
+        ]});
       }
     } catch (error) {
       next(error);
