@@ -2,6 +2,29 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 
+// Add typescript declarations for missing modules
+declare module 'three/examples/jsm/controls/OrbitControls' {
+  export class OrbitControls {
+    constructor(camera: THREE.Camera, domElement: HTMLElement);
+    update(): void;
+    enableDamping: boolean;
+    dampingFactor: number;
+    enableZoom: boolean;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/OBJLoader' {
+  export class OBJLoader {
+    constructor();
+    load(
+      url: string,
+      onLoad: (object: THREE.Object3D) => void,
+      onProgress?: (event: ProgressEvent) => void,
+      onError?: (event: ErrorEvent) => void
+    ): void;
+  }
+}
+
 interface ThreeJSCanvasProps {
   modelUrl?: string;
   placeholder?: boolean;
@@ -22,17 +45,41 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
         // Track whether the component is still mounted
         let isMounted = true;
         
-        // Dynamically import Three.js modules
-        const THREE = await import('three');
-        const OrbitControlsModule = await import('three/examples/jsm/controls/OrbitControls');
-        const OBJLoaderModule = await import('three/examples/jsm/loaders/OBJLoader');
+        // Instead of dynamic imports that cause TS errors, use top-level imports
+        // We're just using these type annotations for better type safety
+        type OrbitControlsType = any;
+        type OBJLoaderType = any;
         
-        const { OrbitControls } = OrbitControlsModule;
-        const { OBJLoader } = OBJLoaderModule;
+        // Create placeholders for the modules we'll load
+        let OrbitControls: OrbitControlsType;
+        let OBJLoader: OBJLoaderType;
+        
+        // Load modules
+        try {
+          const OrbitControlsModule = await import('three/examples/jsm/controls/OrbitControls');
+          const OBJLoaderModule = await import('three/examples/jsm/loaders/OBJLoader');
+          
+          OrbitControls = OrbitControlsModule.OrbitControls;
+          OBJLoader = OBJLoaderModule.OBJLoader;
+        } catch (e) {
+          console.error("Failed to load Three.js modules:", e);
+          // Fallback to global THREE if available
+          OrbitControls = (window as any).THREE?.OrbitControls;
+          OBJLoader = (window as any).THREE?.OBJLoader;
+          
+          if (!OrbitControls || !OBJLoader) {
+            throw new Error("Required Three.js modules could not be loaded");
+          }
+        }
         
         // Create scene
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xf0f0f0);
+        
+        // Ensure mountRef is still available
+        if (!mountRef.current) {
+          throw new Error("Mount element no longer available");
+        }
         
         // Set up renderer
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -304,7 +351,7 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
   return (
     <motion.div
       ref={mountRef}
-      className="w-full h-full rounded-lg"
+      className="w-full h-full rounded-lg liquid-gradient-border relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
@@ -312,8 +359,8 @@ const ThreeJSCanvas = ({ modelUrl, placeholder = false }: ThreeJSCanvasProps) =>
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm">
           <div className="bg-card p-4 rounded-lg shadow-lg">
-            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
-            <p className="text-sm text-center font-medium">Loading 3D Model...</p>
+            <div className="animate-spin h-8 w-8 border-4 liquid-gradient border-t-transparent rounded-full mx-auto mb-2"></div>
+            <p className="text-sm text-center font-medium liquid-gradient">Loading 3D Model...</p>
           </div>
         </div>
       )}
