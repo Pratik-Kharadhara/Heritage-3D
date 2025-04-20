@@ -65,7 +65,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ modelUrl, isPreview = false, 
             onClick={() => setIs3DMode(true)}
             className={is3DMode ? "bg-primary text-primary-foreground" : ""}
           >
-            <Cube className="h-4 w-4 mr-2" />
+            <Box className="h-4 w-4 mr-2" />
             3D View
           </Button>
           <Button 
