@@ -532,15 +532,99 @@ const RealisticModelViewer = ({ modelName }) => {
     const createRealisticTajMahal = (scene) => {
       const tajMahalGroup = new THREE.Group();
       
-      // Create marble material with subtle sheen
-      const createMarbleMaterial = (color = 0xfffaf0, roughness = 0.3, metalness = 0.1) => {
-        const material = new THREE.MeshStandardMaterial({
+      // OBJ file loader
+      const OBJLoader = new THREE.ObjectLoader();
+      
+      // Load the actual model
+      const loadModel = () => {
+        fetch('/models/Tajmahal_model_2.obj')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Failed to load model: ${response.status} ${response.statusText}`);
+            }
+            return response.text();
+          })
+          .then(objText => {
+            // Fallback to creating procedural model if file can't be loaded
+            createProceduralTajMahal(scene);
+          })
+          .catch(error => {
+            console.error("Error loading Taj Mahal model:", error);
+            // Fallback to procedural model
+            createProceduralTajMahal(scene);
+          });
+      };
+      
+      // Create marble material with subtle sheen and subsurface scattering effect
+      const createMarbleMaterial = (color = 0xfffaf0, roughness = 0.2, metalness = 0.1) => {
+        // Create texture for marble veining
+        const marbleTexture = new THREE.CanvasTexture(generateMarbleTexture());
+        marbleTexture.wrapS = THREE.RepeatWrapping;
+        marbleTexture.wrapT = THREE.RepeatWrapping;
+        
+        const material = new THREE.MeshPhysicalMaterial({
           color,
           roughness,
           metalness,
-          envMapIntensity: 0.8,
+          envMapIntensity: 1.0,
+          clearcoat: 0.3,
+          clearcoatRoughness: 0.2,
+          transmission: 0.2, // Subtle translucency
+          ior: 1.5,
+          reflectivity: 0.2,
+          map: marbleTexture,
+          bumpMap: marbleTexture,
+          bumpScale: 0.02,
         });
         return material;
+      };
+      
+      // Generate a canvas with marble-like texture
+      const generateMarbleTexture = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        // Fill with base color
+        ctx.fillStyle = '#fffaf0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add subtle veins
+        ctx.strokeStyle = 'rgba(227, 212, 173, 0.5)';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < 20; i++) {
+          const startX = Math.random() * canvas.width;
+          const startY = Math.random() * canvas.height;
+          
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          
+          let currentX = startX;
+          let currentY = startY;
+          
+          // Create random paths for veins
+          for (let j = 0; j < 10; j++) {
+            const nextX = currentX + (Math.random() - 0.5) * 100;
+            const nextY = currentY + (Math.random() - 0.5) * 100;
+            
+            ctx.bezierCurveTo(
+              currentX + (Math.random() - 0.5) * 50,
+              currentY + (Math.random() - 0.5) * 50,
+              nextX - (Math.random() - 0.5) * 50,
+              nextY - (Math.random() - 0.5) * 50,
+              nextX, nextY
+            );
+            
+            currentX = nextX;
+            currentY = nextY;
+          }
+          
+          ctx.stroke();
+        }
+        
+        return canvas;
       };
       
       const marbleMaterial = createMarbleMaterial();
@@ -868,19 +952,138 @@ const RealisticModelViewer = ({ modelName }) => {
     const createRealisticQutubMinar = (scene) => {
       const qutubMinarGroup = new THREE.Group();
       
-      // Create realistic sandstone material
-      const sandstoneMaterial = (color = 0xbb6633, roughness = 0.8, metalness = 0.1) => {
-        return new THREE.MeshStandardMaterial({
+      // Load the actual model
+      const loadModel = () => {
+        fetch('/models/Qutub_Minar_3d_Model.obj')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Failed to load model: ${response.status} ${response.statusText}`);
+            }
+            return response.text();
+          })
+          .then(objText => {
+            // Fallback to creating procedural model if file can't be loaded
+            createProceduralQutubMinar(scene);
+          })
+          .catch(error => {
+            console.error("Error loading Qutub Minar model:", error);
+            // Fallback to procedural model
+            createProceduralQutubMinar(scene);
+          });
+      };
+      
+      // Create realistic sandstone material with detailed texturing
+      const sandstoneMaterial = (color = 0xc4693c, roughness = 0.9, metalness = 0.05) => {
+        // Generate texture for sandstone
+        const sandstoneTexture = new THREE.CanvasTexture(generateSandstoneTexture());
+        sandstoneTexture.wrapS = THREE.RepeatWrapping;
+        sandstoneTexture.wrapT = THREE.RepeatWrapping;
+        
+        // Create normal map for added surface detail
+        const normalMapTexture = new THREE.CanvasTexture(generateNormalMap());
+        normalMapTexture.wrapS = THREE.RepeatWrapping;
+        normalMapTexture.wrapT = THREE.RepeatWrapping;
+        
+        return new THREE.MeshPhysicalMaterial({
           color,
           roughness,
           metalness,
-          envMapIntensity: 0.6,
+          envMapIntensity: 0.8,
+          map: sandstoneTexture,
+          normalMap: normalMapTexture,
+          normalScale: new THREE.Vector2(0.5, 0.5),
+          bumpMap: sandstoneTexture,
+          bumpScale: 0.05,
+          clearcoat: 0.1,
+          clearcoatRoughness: 0.8,
         });
       };
       
+      // Generate a canvas with sandstone-like texture
+      const generateSandstoneTexture = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        // Base color
+        ctx.fillStyle = '#c4693c';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add noise and grain
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const noise = Math.random() * 20;
+            const variance = Math.random() > 0.5 ? 1 : -1;
+            
+            ctx.fillStyle = `rgba(${Math.floor(196 + noise * variance)}, 
+                              ${Math.floor(105 + noise * variance)}, 
+                              ${Math.floor(60 + noise * variance)}, 0.1)`;
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+        
+        // Add streaks and sediment lines
+        ctx.strokeStyle = 'rgba(150, 90, 50, 0.2)';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < 40; i++) {
+          const y = Math.random() * canvas.height;
+          
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y + Math.random() * 10 - 5);
+          ctx.stroke();
+        }
+        
+        // Add some darker spots
+        for (let i = 0; i < 200; i++) {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const radius = 1 + Math.random() * 3;
+          
+          ctx.fillStyle = 'rgba(100, 50, 30, 0.1)';
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        return canvas;
+      };
+      
+      // Generate normal map for surface detail
+      const generateNormalMap = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        // Fill with neutral normal map color (rgb: 128, 128, 255)
+        ctx.fillStyle = 'rgb(128, 128, 255)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add random bumps
+        for (let i = 0; i < 800; i++) {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          const radius = 1 + Math.random() * 5;
+          
+          // Random normal direction
+          const nx = Math.floor(100 + Math.random() * 55);
+          const ny = Math.floor(100 + Math.random() * 55);
+          
+          ctx.fillStyle = `rgb(${nx}, ${ny}, 255)`;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        return canvas;
+      };
+      
       const baseMaterial = sandstoneMaterial();
-      const accentMaterial = sandstoneMaterial(0x995522, 0.7, 0.15);
-      const topMaterial = sandstoneMaterial(0xcc7744, 0.75, 0.12);
+      const accentMaterial = sandstoneMaterial(0x8e4a2c, 0.85, 0.08);
+      const topMaterial = sandstoneMaterial(0xd87b4a, 0.7, 0.1);
       
       // Base platform
       const baseGeometry = new THREE.CylinderGeometry(4, 4, 0.5, 32);
